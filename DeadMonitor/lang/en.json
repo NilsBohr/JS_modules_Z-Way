@@ -1,0 +1,6 @@
+{
+	"m_title":"Dead Monitor",
+	"m_descr":"The dead monitor module will start polling session to check connection with every device in the nework: battery and always on. It will create a notification if any device is failed",
+	"l_launch_hour":"Do dead monitoring every",
+	"warning":"Attention! Device is not awake for too long"
+}
