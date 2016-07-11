@@ -1,0 +1,4 @@
+{
+	"m_title":"Network Silence Watcher",
+	"m_descr":"This module watches, if there are no messages from devices in the network for more then 30 minutes and then triees to recover situation"
+}

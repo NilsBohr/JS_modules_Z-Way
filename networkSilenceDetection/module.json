@@ -1,0 +1,36 @@
+{
+    "dependencies": [],
+    "singleton": false,
+    "category": "notifications",
+    "author": "Z-Wave.Me",
+    "homepage": "http://razberry.z-wave.me",
+    "icon": "icon.png",
+    "moduleName":"networkSilenceDetection",
+    "version": "0.0.1",
+    "maturity": "stable",
+    "repository": {
+        "type": "git",
+        "source": "https://github.com/Z-Wave-Me/home-automation"
+    },
+    "defaults": {
+        "title": "__m_title__",
+        "description": "__m_descr__"
+    },
+    "schema": {
+        "type": "object",
+        "properties": {
+            "interval": {
+                "type": "number",
+                "required": true
+            }
+        },
+        "required": false
+    },
+    "options": {
+        "fields": {
+            "interval": {
+                "label": "dummy"
+            }
+        }
+    }
+}
