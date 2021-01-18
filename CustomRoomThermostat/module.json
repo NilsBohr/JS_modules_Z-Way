@@ -1,0 +1,68 @@
+{
+	"dependencies": [],
+	"singleton": false,
+	"category": "device_enhancements",
+	"author": "",
+	"homepage": "",
+	"icon": "icon.png",
+		"moduleName":"CustomRoomThermostat",
+	"version": "1.0",
+	"maturity": "stable",
+	"defaults": {
+		"title": "__m_title__",
+		"description": "__m_descr__",
+		"sensor": ""
+	},
+	"schema": {
+		"type": "object",
+		"properties": {
+			"sensor": {
+				"field": "enum",
+				"datasource": "namespaces",
+				"enum": "namespaces:devices_sensorMultilevel:deviceId",
+				"required": true
+			},
+			"devices": {
+				"type": "array",
+				"items": {
+					"type": "object",
+					"properties": {
+						"device": {
+							"field": "enum",
+							"datasource": "namespaces",
+							"enum": "namespaces:devices_thermostat:deviceId",
+							"required": true
+						}
+					}
+				}
+			}
+		},
+		"required": false
+	},
+	"options": {
+		"fields": {
+			"sensor": {
+				"label": "__l_sensor__",
+				"type": "select",
+				"datasource": "namespaces",
+				"field": "optionLabels",
+				"optionLabels": "namespaces:devices_sensorMultilevel:deviceName"
+			},
+			"devices": {
+				"label": "__l_devices__",
+				"fields": {
+					"item": {
+						"fields": {
+							"device": {
+								"label": "",
+								"datasource": "namespaces",
+								"field": "optionLabels",
+								"optionLabels": "namespaces:devices_thermostat:deviceName"
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
