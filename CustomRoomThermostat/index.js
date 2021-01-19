@@ -13,10 +13,12 @@ _module = CustomRoomThermostat;
 
 CustomRoomThermostat.prototype.init = function (config) {
 	CustomRoomThermostat.super_.prototype.init.call(this, config);
+	var self = this;
+
 	console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@DEBUG@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
 	console.log(JSON.stringify(this.config))
 	console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@DEBUG@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-	var self = this;
+	
 
 	this.vDev = this.controller.devices.create({
 		deviceId: "CustomRoomThermostat_" + this.id,
@@ -35,14 +37,21 @@ CustomRoomThermostat.prototype.init = function (config) {
 		overlay: {},
 		handler: function (command, args) {
 			self.vDev.set("metrics:level", parseInt(args.level, 10));
+			self.checkTemp();
 		},
 		moduleId: this.id
 	});
-	
-};
 
+	this.controller.devices.on(this.config.sensor, 'change:metrics:level', function() {
+		self.checkTemp();
+	});
+};
 CustomRoomThermostat.prototype.stop = function () {
 	var self = this;
+
+	this.controller.devices.off(this.config.sensor, 'change:metrics:level', function() {
+		self.checkTemp();
+	});
 
 	if (this.vDev) {
 		this.controller.devices.remove(this.vDev.id);
@@ -51,3 +60,16 @@ CustomRoomThermostat.prototype.stop = function () {
 
 	CustomRoomThermostat.super_.prototype.stop.call(this);
 };
+
+CustomRoomThermostat.prototype.checkTemp = function () {
+	var vDevSensor = this.controller.devices.get(this.config.sensor),
+		vDev = this.vDev;
+	
+	if (vDevSensor.get("metrics:level") > vDev.get("metrics:level")) {
+		console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@TOO HOT!!!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+	}	
+	else {
+		console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@TOO COLD!!!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+	}
+	
+}
