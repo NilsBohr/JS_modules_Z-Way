@@ -62,14 +62,34 @@ CustomRoomThermostat.prototype.stop = function () {
 };
 
 CustomRoomThermostat.prototype.checkTemp = function () {
+	var self = this;
+
 	var vDevSensor = this.controller.devices.get(this.config.sensor),
-		vDev = this.vDev;
+	vDev = this.vDev;
 	
-	if (vDevSensor.get("metrics:level") > vDev.get("metrics:level")) {
-		console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@TOO HOT!!!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+	var sensorValue = vDevSensor.get("metrics:level"),
+	mainThermostatValue = vDev.get("metrics:level"),
+	delta = Number("1");
+
+	if (sensorValue > (mainThermostatValue + delta)) {
+		console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@TOO HOT!!!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+		self.config.devices.forEach(function(dev) {
+			var vDevX = self.controller.devices.get(dev.device);
+			if (vDevX) {
+				vDevX.set("metrics:level",10)
+			}
+		});
 	}	
-	else {
-		console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@TOO COLD!!!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+	else if (sensorValue < (mainThermostatValue - delta)) {
+		console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@TOO COLD!!!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+		self.config.devices.forEach(function(dev) {
+			var vDevX = self.controller.devices.get(dev.device);
+			if (vDevX) {
+				vDevX.set("metrics:level",30)
+			}
+		});
 	}
-	
+	else {
+		console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@TEMPERATURE IS IN NORMAL RANGE!!!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+	}
 }
