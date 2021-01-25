@@ -1,3 +1,7 @@
+// ----------------------------------------------------------------------------
+// --- Class definition, inheritance and setup
+// ----------------------------------------------------------------------------
+
 function CustomRoomThermostat (id, controller) {
 	// Call superconstructor first (AutomationModule)
 	CustomRoomThermostat.super_.call(this, id, controller);
@@ -14,14 +18,7 @@ _module = CustomRoomThermostat;
 CustomRoomThermostat.prototype.init = function (config) {
 	CustomRoomThermostat.super_.prototype.init.call(this, config);
 	var self = this;
-
-	console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@DEBUG@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-	console.log(JSON.stringify(this.config))
-	console.log(this.config.delta)
-	console.log(typeof(this.config.delta))
-	console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@DEBUG@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
 	
-
 	this.vDev = this.controller.devices.create({
 		deviceId: "CustomRoomThermostat_" + this.id,
 		defaults: {
@@ -63,7 +60,13 @@ CustomRoomThermostat.prototype.stop = function () {
 	CustomRoomThermostat.super_.prototype.stop.call(this);
 };
 
+// ----------------------------------------------------------------------------
+// --- Module methods
+// ----------------------------------------------------------------------------
+
 CustomRoomThermostat.prototype.checkTemp = function () {
+	console.log("DBG[CustomRoomThermostat_", this.id,"]: Temperature sensor's state is changed. Checking temperature value..");
+
 	var self = this;
 
 	var vDevSensor = this.controller.devices.get(this.config.sensor),
@@ -74,24 +77,24 @@ CustomRoomThermostat.prototype.checkTemp = function () {
 	delta = this.config.delta;
 
 	if (sensorValue > (mainThermostatValue + delta)) {
-		console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@TOO HOT!!!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+		console.log("DBG[CustomRoomThermostat_", this.id,"]: Temperature is too hot. Setting thermostats temperature to 10 degree.");
 		self.config.devices.forEach(function(dev) {
 			var vDevX = self.controller.devices.get(dev.device);
 			if (vDevX) {
-				vDevX.set("metrics:level",10)
+				vDevX.set("metrics:level",10);
 			}
 		});
 	}	
 	else if (sensorValue < (mainThermostatValue - delta)) {
-		console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@TOO COLD!!!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+		console.log("DBG[CustomRoomThermostat_", this.id,"]: Temperature is too cold. Setting thermostats temperature to 30 degree.");
 		self.config.devices.forEach(function(dev) {
 			var vDevX = self.controller.devices.get(dev.device);
 			if (vDevX) {
-				vDevX.set("metrics:level",30)
+				vDevX.set("metrics:level",30);
 			}
 		});
 	}
 	else {
-		console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@TEMPERATURE IS IN NORMAL RANGE!!!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+		console.log("DBG[CustomRoomThermostat_", this.id,"]: Temperature is normal range. Nothing to do.");
 	}
 }
