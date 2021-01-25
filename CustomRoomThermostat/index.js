@@ -17,6 +17,8 @@ CustomRoomThermostat.prototype.init = function (config) {
 
 	console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@DEBUG@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
 	console.log(JSON.stringify(this.config))
+	console.log(this.config.delta)
+	console.log(typeof(this.config.delta))
 	console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@DEBUG@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
 	
 
@@ -69,7 +71,7 @@ CustomRoomThermostat.prototype.checkTemp = function () {
 	
 	var sensorValue = vDevSensor.get("metrics:level"),
 	mainThermostatValue = vDev.get("metrics:level"),
-	delta = Number("1");
+	delta = this.config.delta;
 
 	if (sensorValue > (mainThermostatValue + delta)) {
 		console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@TOO HOT!!!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
