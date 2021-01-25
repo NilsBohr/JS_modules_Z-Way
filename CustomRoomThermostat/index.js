@@ -77,7 +77,7 @@ CustomRoomThermostat.prototype.checkTemp = function () {
 	delta = this.config.delta;
 
 	if (sensorValue > (mainThermostatValue + delta)) {
-		console.log("DBG[CustomRoomThermostat_", this.id,"]: Temperature is too hot. Setting thermostats temperature to 10 degree.");
+		console.log("CustomRoomThermostat_", this.id,": Sensor's temperature is too hot. Setting thermostats temperature to 10 degree.");
 		self.config.devices.forEach(function(dev) {
 			var vDevX = self.controller.devices.get(dev.device);
 			if (vDevX) {
@@ -86,15 +86,12 @@ CustomRoomThermostat.prototype.checkTemp = function () {
 		});
 	}	
 	else if (sensorValue < (mainThermostatValue - delta)) {
-		console.log("DBG[CustomRoomThermostat_", this.id,"]: Temperature is too cold. Setting thermostats temperature to 30 degree.");
+		console.log("CustomRoomThermostat_", this.id,": Sensor's temperature is too cold. Setting thermostats temperature to 30 degree.");
 		self.config.devices.forEach(function(dev) {
 			var vDevX = self.controller.devices.get(dev.device);
 			if (vDevX) {
 				vDevX.set("metrics:level",30);
 			}
 		});
-	}
-	else {
-		console.log("DBG[CustomRoomThermostat_", this.id,"]: Temperature is normal range. Nothing to do.");
 	}
 }
