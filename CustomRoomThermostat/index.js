@@ -65,7 +65,7 @@ CustomRoomThermostat.prototype.stop = function () {
 // ----------------------------------------------------------------------------
 
 CustomRoomThermostat.prototype.checkTemp = function () {
-	console.log("DBG[CustomRoomThermostat_", this.id,"]: Temperature sensor's state is changed. Checking temperature value.. \n");
+	console.log("DBG[CustomRoomThermostat_", this.id,"]: Sensor's temperature state is changed. Checking temperature value.. \n");
 
 	var self = this;
 
