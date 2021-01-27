@@ -22,6 +22,15 @@
 				"enum": "namespaces:devices_sensorMultilevel:deviceId",
 				"required": true
 			},
+			"delta": {
+				"minimum": 1,
+				"maximum": 10,
+				"required": true
+			},
+			"debug": {
+				"type": "checkbox",
+				"rightLabel": "__rl_debug__"
+			},
 			"devices": {
 				"type": "array",
 				"items": {
@@ -47,6 +56,15 @@
 				"datasource": "namespaces",
 				"field": "optionLabels",
 				"optionLabels": "namespaces:devices_sensorMultilevel:deviceName"
+			},
+			"delta": {
+				"label": "__l_delta__",
+				"type": "number",
+				"helper": "__h_delta__"
+			},
+			"debug": {
+				"type": "checkbox",
+				"rightLabel": "__rl_debug__"
 			},
 			"devices": {
 				"label": "__l_devices__",
