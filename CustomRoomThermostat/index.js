@@ -71,7 +71,6 @@ CustomRoomThermostat.prototype.checkTemp = function () {
 
 	var vDevSensor = this.controller.devices.get(this.config.sensor),
 	vDev = this.vDev;
-	console.log("DBG[CustomRoomThermostat_",this.id,"]: vDevSensor variable value is",vDevSensor.get("id"),"\n");
 
 	var sensorValue = vDevSensor.get("metrics:level"),
 	mainThermostatValue = vDev.get("metrics:level"),
