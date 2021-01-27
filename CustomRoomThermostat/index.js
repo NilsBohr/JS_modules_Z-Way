@@ -65,19 +65,27 @@ CustomRoomThermostat.prototype.stop = function () {
 // ----------------------------------------------------------------------------
 
 CustomRoomThermostat.prototype.checkTemp = function () {
-	console.log("DBG[CustomRoomThermostat_", this.id,"]: Temperature sensor's state is changed. Checking temperature value..");
+	console.log("DBG[CustomRoomThermostat_", this.id,"]: Temperature sensor's state is changed. Checking temperature value.. \n");
 
 	var self = this;
 
 	var vDevSensor = this.controller.devices.get(this.config.sensor),
 	vDev = this.vDev;
-	
+	console.log("DBG[CustomRoomThermostat_",this.id,"]: vDevSensor variable value is",vDevSensor.get("id"),"\n");
+
 	var sensorValue = vDevSensor.get("metrics:level"),
 	mainThermostatValue = vDev.get("metrics:level"),
 	delta = this.config.delta;
+	
+	if (self.config.debug === true) {
+		console.log("DBG[CustomRoomThermostat_",this.id,"]: sensorValue variable value is",sensorValue,"\n");
+		console.log("DBG[CustomRoomThermostat_",this.id,"]: mainThermostat variable value is",mainThermostatValue,"\n");
+		console.log("DBG[CustomRoomThermostat_",this.id,"]: delta variable value is",delta,"\n");
+		console.log("DBG[CustomRoomThermostat_",this.id,"]: Array of managed devices value is",JSON.stringify(self.config.devices),"\n");
+	}
 
 	if (sensorValue > (mainThermostatValue + delta)) {
-		console.log("CustomRoomThermostat_", this.id,": Sensor's temperature is too hot. Setting thermostats temperature to 10 degree.");
+		console.log("DBG[CustomRoomThermostat_", this.id,"]: Sensor's temperature is too hot. Setting thermostats temperature to 10 degree. \n");
 		self.config.devices.forEach(function(dev) {
 			var vDevX = self.controller.devices.get(dev.device);
 			if (vDevX) {
@@ -86,12 +94,17 @@ CustomRoomThermostat.prototype.checkTemp = function () {
 		});
 	}	
 	else if (sensorValue < (mainThermostatValue - delta)) {
-		console.log("CustomRoomThermostat_", this.id,": Sensor's temperature is too cold. Setting thermostats temperature to 30 degree.");
+		console.log("DBG[CustomRoomThermostat_", this.id,"]: Sensor's temperature is too cold. Setting thermostats temperature to 30 degree. \n");
 		self.config.devices.forEach(function(dev) {
 			var vDevX = self.controller.devices.get(dev.device);
 			if (vDevX) {
 				vDevX.set("metrics:level",30);
 			}
 		});
+	}
+	else {
+		if (self.config.debug === true) {
+			console.log("DBG[CustomRoomThermostat_", this.id,"]: Sensor's temperature is in normal range. Nothing to do. \n");
+		}
 	}
 }
