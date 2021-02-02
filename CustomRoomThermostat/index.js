@@ -83,8 +83,9 @@ CustomRoomThermostat.prototype.checkTemp = function () {
 		console.log("DBG[CustomRoomThermostat_",this.id,"]: Array of managed devices value is",JSON.stringify(self.config.devices),"\n");
 	}
 
-	if (sensorValue > (mainThermostatValue + delta)) {
+	if ((sensorValue > (mainThermostatValue + delta)) && (global.climatState != "cooling")) {
 		console.log("DBG[CustomRoomThermostat_", this.id,"]: Sensor's temperature is too hot. Setting thermostats temperature to 10 degree. \n");
+		global.climatState = "cooling";
 		self.config.devices.forEach(function(dev) {
 			var vDevX = self.controller.devices.get(dev.device);
 			if (vDevX) {
@@ -92,8 +93,9 @@ CustomRoomThermostat.prototype.checkTemp = function () {
 			}
 		});
 	}	
-	else if (sensorValue < (mainThermostatValue - delta)) {
+	else if ((sensorValue < (mainThermostatValue - delta)) && (global.climatState != "heating")) {
 		console.log("DBG[CustomRoomThermostat_", this.id,"]: Sensor's temperature is too cold. Setting thermostats temperature to 30 degree. \n");
+		global.climatState = "heating";
 		self.config.devices.forEach(function(dev) {
 			var vDevX = self.controller.devices.get(dev.device);
 			if (vDevX) {
