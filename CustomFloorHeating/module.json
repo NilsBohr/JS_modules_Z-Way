@@ -31,7 +31,25 @@
 				"datasource": "namespaces",
 				"enum": "namespaces:devices_switchBinary:deviceId",
 				"required": true
-				}
+			},
+			"sensor": {
+				"field": "enum",
+				"datasource": "namespaces",
+				"enum": "namespaces:devices_sensorMultilevel:deviceId",
+				"required": true
+			},
+			"operator": {
+				"type": "string",
+				"enum": [
+					"=",
+					">",
+					"<"
+				],
+				"required": true
+			},
+			"degree": {
+				"required": true
+			}
 		},
 		"required": true
 	},
@@ -59,7 +77,22 @@
 				"datasource": "namespaces",
 				"field": "optionLabels",
 				"optionLabels": "namespaces:devices_switchBinary:deviceName"
-				}			
+			},
+			"sensor": {
+				"label": "__l_sensor__",
+				"type": "select",
+				"datasource": "namespaces",
+				"field": "optionLabels",
+				"optionLabels": "namespaces:devices_sensorMultilevel:deviceName"
+			},
+			"operator": {
+				"label":"__l_operator__",
+				"type": "select"	
+			},
+			"degree": {
+				"label": "__l_degree__",
+				"type": "number"
+			}
 		}
 	}
 }
