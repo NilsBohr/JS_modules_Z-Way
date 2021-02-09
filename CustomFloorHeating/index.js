@@ -21,11 +21,11 @@ CustomFloorHeating.prototype.init = function (config) {
 	var self = this;
 
 	// set up cron handler
-	self.controller.on("CustomFloorHeating.starttime.run." + self.id, function() {
-		self.performSwitchCommand("on");
+	self.controller.on("CustomFloorHeating.run." + self.id, function() {
+		self.performSwitchCommand(true);
 	});
-	self.controller.on("CustomFloorHeating.endtime.run." + self.id, function() {
-		self.performSwitchCommand("off");
+	self.controller.on("CustomFloorHeating.stop." + self.id, function() {
+		self.performSwitchCommand(false);
 	});
 
 	// add cron schedule
@@ -36,17 +36,15 @@ CustomFloorHeating.prototype.init = function (config) {
 	}
 
 	wds.forEach(function(wd) {
-		self.controller.emit("cron.addTask", "CustomFloorHeating.starttime.run." + self.id, {
+		self.controller.emit("cron.addTask", "CustomFloorHeating.run." + self.id, {
 			minute: parseInt(self.config.starttime.split(":")[1], 10),
 			hour: parseInt(self.config.starttime.split(":")[0], 10),
 			weekDay: wd,
 			day: null,
 			month: null
 		});
-	});
 
-	wds.forEach(function(wd) {
-		self.controller.emit("cron.addTask", "CustomFloorHeating.endtime.run." + self.id, {
+		self.controller.emit("cron.addTask", "CustomFloorHeating.stop." + self.id, {
 			minute: parseInt(self.config.endtime.split(":")[1], 10),
 			hour: parseInt(self.config.endtime.split(":")[0], 10),
 			weekDay: wd,
@@ -61,15 +59,15 @@ CustomFloorHeating.prototype.stop = function () {
 	
 	var self = this;
 
-	self.controller.emit("cron.removeTask", "CustomFloorHeating.starttime.run." + this.id);
-	// self.controller.off("CustomFloorHeating.starttime.run." + this.id, function() {
-	// 	self.performSwitchCommand("on");
-	// });
+	self.controller.emit("cron.removeTask", "CustomFloorHeating.run." + this.id);
+	self.controller.off("CustomFloorHeating.run." + this.id, function() {
+		self.performSwitchCommand(true);
+	});
 
-	self.controller.emit("cron.removeTask", "CustomFloorHeating.endtime.run." + this.id);
-	// self.controller.off("CustomFloorHeating.endtime.run." + this.id, function() {
-	// 	self.performSwitchCommand("off");
-	// });
+	self.controller.emit("cron.removeTask", "CustomFloorHeating.stop." + this.id);
+	self.controller.off("CustomFloorHeating.stop." + this.id, function() {
+		self.performSwitchCommand(false);
+	});
 };
 
 // ----------------------------------------------------------------------------
@@ -82,27 +80,12 @@ CustomFloorHeating.prototype.performSwitchCommand = function (status) {
 	
 	var vDevSwitchValue = vDevSwitch.get("metrics:level"),
 	vDevSensorValue = vDevSensor.get("metrics:level"),
-	operatorValue = this.config.operator,
-	degreeValue = this.config.degree,
-	checkOn = false;
+	degreeValue = this.config.degree;
 
-	if (status === "on") {
-		switch (operatorValue) {
-			case '>':
-				checkOn = vDevSensorValue > degreeValue;
-				break;
-			case '=':
-				checkOn = vDevSensorValue === degreeValue;
-				break;
-			case '<':
-				checkOn = vDevSensorValue < degreeValue;
-				break;
-			default:
-				break;
-		}	
-		if (checkOn === true && vDevSwitchValue !== "on") {
+	if (status) {	
+		if ((vDevSensorValue < degreeValue) && vDevSwitchValue !== "on") {
 			console.log("DBG[CustomFloorHeating_" + this.id + "]: Switch value is changed state to ON");
-			//vDevSwitch.set("metrics:level", status);
+			vDevSwitch.set("metrics:level", "on");
 		}
 		else {
 			console.log("DBG[CustomFloorHeating_" + this.id + "]: Temperature is not in the right range or switch is already in ON state. Nothing to do.");
@@ -111,7 +94,7 @@ CustomFloorHeating.prototype.performSwitchCommand = function (status) {
 	else {
 		if (vDevSwitchValue !== "off") {
 			console.log("DBG[CustomFloorHeating_" + this.id + "]: Switch value is changed state to OFF");
-			//vDevSwitch.set("metrics:level", status);
+			vDevSwitch.set("metrics:level", "off");
 		}
 		else {
 			console.log("DBG[CustomFloorHeating_" + this.id + "]: Switch is already in OFF state. Nothing to do.");

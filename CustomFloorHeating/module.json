@@ -38,15 +38,6 @@
 				"enum": "namespaces:devices_sensorMultilevel:deviceId",
 				"required": true
 			},
-			"operator": {
-				"type": "string",
-				"enum": [
-					"=",
-					">",
-					"<"
-				],
-				"required": true
-			},
 			"degree": {
 				"required": true
 			}
@@ -84,10 +75,6 @@
 				"datasource": "namespaces",
 				"field": "optionLabels",
 				"optionLabels": "namespaces:devices_sensorMultilevel:deviceName"
-			},
-			"operator": {
-				"label":"__l_operator__",
-				"type": "select"	
 			},
 			"degree": {
 				"label": "__l_degree__",
