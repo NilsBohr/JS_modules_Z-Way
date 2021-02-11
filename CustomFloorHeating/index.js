@@ -20,16 +20,42 @@ CustomFloorHeating.prototype.init = function (config) {
 
 	var self = this;
 
+	this.runScene = function() {
+		var vDevSwitch = self.controller.devices.get(self.config.switch),
+		vDevSensor = self.controller.devices.get(self.config.sensor);
+	
+		var vDevSwitchValue = vDevSwitch.get("metrics:level"),
+		vDevSensorValue = vDevSensor.get("metrics:level"),
+		degreeValue = self.config.degree;
+
+		if ((vDevSensorValue < degreeValue) && vDevSwitchValue !== "on") {
+			console.log("DBG[CustomFloorHeating_" + self.id + "]: Switch value is changed state to ON");
+			vDevSwitch.set("metrics:level", "on");
+		}
+		else {
+			console.log("DBG[CustomFloorHeating_" + self.id + "]: Temperature is not lower than " + degreeValue + " degree or switch is already in ON state. Nothing to do.");
+		}
+	};
+	this.stopScene = function() {
+		var vDevSwitch = self.controller.devices.get(self.config.switch);
+	
+		var vDevSwitchValue = vDevSwitch.get("metrics:level");
+
+		if (vDevSwitchValue !== "off") {
+			console.log("DBG[CustomFloorHeating_" + self.id + "]: Switch value is changed state to OFF");
+			vDevSwitch.set("metrics:level", "off");
+		}
+		else {
+			console.log("DBG[CustomFloorHeating_" + self.id + "]: Switch is already in OFF state. Nothing to do.");
+		}
+	};
+
 	// set up cron handler
-	self.controller.on("CustomFloorHeating.run." + self.id, function() {
-		self.performSwitchCommand(true);
-	});
-	self.controller.on("CustomFloorHeating.stop." + self.id, function() {
-		self.performSwitchCommand(false);
-	});
+	this.controller.on("CustomFloorHeating.run." + self.id, this.runScene);
+	this.controller.on("CustomFloorHeating.stop." + self.id, this.stopScene)
 
 	// add cron schedule
-	var wds = self.config.weekdays.map(function(x) { return parseInt(x, 10); });
+	var wds = this.config.weekdays.map(function(x) { return parseInt(x, 10); });
 	
 	if (wds.length == 7) {
 		wds = [null]; // same as all - hack to add single cron record. NB! changes type of wd elements from integer to null
@@ -59,45 +85,13 @@ CustomFloorHeating.prototype.stop = function () {
 	
 	var self = this;
 
-	self.controller.emit("cron.removeTask", "CustomFloorHeating.run." + this.id);
-	self.controller.off("CustomFloorHeating.run." + this.id, function() {
-		self.performSwitchCommand(true);
-	});
+	this.controller.emit("cron.removeTask", "CustomFloorHeating.run." + this.id);
+	this.controller.off("CustomFloorHeating.run." + this.id, this.runScene);
 
-	self.controller.emit("cron.removeTask", "CustomFloorHeating.stop." + this.id);
-	self.controller.off("CustomFloorHeating.stop." + this.id, function() {
-		self.performSwitchCommand(false);
-	});
+	this.controller.emit("cron.removeTask", "CustomFloorHeating.stop." + this.id);
+	this.controller.off("CustomFloorHeating.stop." + this.id, this.stopScene);
 };
 
 // ----------------------------------------------------------------------------
 // --- Module methods
 // ----------------------------------------------------------------------------
-
-CustomFloorHeating.prototype.performSwitchCommand = function (status) {
-	var vDevSwitch = this.controller.devices.get(this.config.switch),
-	vDevSensor = this.controller.devices.get(this.config.sensor);
-	
-	var vDevSwitchValue = vDevSwitch.get("metrics:level"),
-	vDevSensorValue = vDevSensor.get("metrics:level"),
-	degreeValue = this.config.degree;
-
-	if (status) {	
-		if ((vDevSensorValue < degreeValue) && vDevSwitchValue !== "on") {
-			console.log("DBG[CustomFloorHeating_" + this.id + "]: Switch value is changed state to ON");
-			vDevSwitch.set("metrics:level", "on");
-		}
-		else {
-			console.log("DBG[CustomFloorHeating_" + this.id + "]: Temperature is not in the right range or switch is already in ON state. Nothing to do.");
-		}
-	}
-	else {
-		if (vDevSwitchValue !== "off") {
-			console.log("DBG[CustomFloorHeating_" + this.id + "]: Switch value is changed state to OFF");
-			vDevSwitch.set("metrics:level", "off");
-		}
-		else {
-			console.log("DBG[CustomFloorHeating_" + this.id + "]: Switch is already in OFF state. Nothing to do.");
-		}
-	}	
-}
