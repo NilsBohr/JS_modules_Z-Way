@@ -69,7 +69,6 @@ CustomFloorHeating.prototype.init = function (config) {
 			day: null,
 			month: null
 		});
-
 		self.controller.emit("cron.addTask", "CustomFloorHeating.stop." + self.id, {
 			minute: parseInt(self.config.endtime.split(":")[1], 10),
 			hour: parseInt(self.config.endtime.split(":")[0], 10),

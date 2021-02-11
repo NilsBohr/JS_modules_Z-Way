@@ -4,7 +4,7 @@
 	"icon": "icon.png",
 	"moduleName":"CustomFloorHeating",
 	"version": "1.0",
-	"maturity": "beta",
+	"maturity": "stable",
 	"defaults": {
 		"title": "__m_title__",
 		"description": "__m_descr__",
