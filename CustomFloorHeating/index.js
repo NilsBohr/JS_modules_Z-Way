@@ -28,12 +28,17 @@ CustomFloorHeating.prototype.init = function (config) {
 		vDevSensorValue = vDevSensor.get("metrics:level"),
 		degreeValue = self.config.degree;
 
-		if ((vDevSensorValue < degreeValue) && vDevSwitchValue !== "on") {
-			console.log("DBG[CustomFloorHeating_" + self.id + "]: Switch value is changed state to ON");
-			vDevSwitch.set("metrics:level", "on");
+		if (vDevSensorValue < degreeValue) {
+			if (vDevSwitchValue !== "on") {
+				console.log("DBG[CustomFloorHeating_" + self.id + "]: Switch value is changed state to ON (current temperature value is "+ vDevSensorValue + ")");
+				vDevSwitch.set("metrics:level", "on");
+			}
+			else {
+				console.log("DBG[CustomFloorHeating_" + self.id + "]: Switch is already in ON state. Nothing to do.");
+			}
 		}
 		else {
-			console.log("DBG[CustomFloorHeating_" + self.id + "]: Temperature is not lower than " + degreeValue + " degree or switch is already in ON state. Nothing to do.");
+			console.log("DBG[CustomFloorHeating_" + self.id + "]: Temperature is not lower than " + degreeValue + " degree (current temperature value is "+ vDevSensorValue +"). Nothing to do.");
 		}
 	};
 	this.stopScene = function() {
