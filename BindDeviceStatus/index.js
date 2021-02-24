@@ -90,7 +90,7 @@ BindDeviceStatus.prototype.init = function (config) {
 						console.log("---  DBG[BindingDeviceStatus_" + self.id + "]: Condition is checked! Nothing to do.");
 					}
 				}
-			}, 3 * 1000);
+			}, 5 * 1000);
 		
 			intervalCounter++;
 			
@@ -101,7 +101,7 @@ BindDeviceStatus.prototype.init = function (config) {
 
 			clearInterval(self.intervalTimer);
 			}	
-		}, 5 * 1000);
+		}, 60 * 1000);
 	}
 
 	this.controller.devices.on(this.config.daylight, "change:metrics:level", this.checkCondition);
