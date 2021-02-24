@@ -1,0 +1,68 @@
+{
+	"singleton": true,
+	"category": "basic_gateway_modules",
+	"icon": "icon.png",
+	"moduleName":"BindDeviceStatus",
+	"version": "1.0.0",
+	"maturity": "beta",
+	"defaults": {
+		"title": "__m_title__",
+		"description": "__m_descr__"
+	},
+	"schema": {
+		"type": "object",
+		"properties": {
+			"daylight" : {
+				"field": "enum",
+				"datasource": "namespaces",
+				"enum": "namespaces:devices_switchBinary:deviceId",
+				"required": true
+			},
+			"sensor" : {
+				"field": "enum",
+				"datasource": "namespaces",
+				"enum": "namespaces:devices_switchBinary:deviceId",
+				"required": true
+			},
+			"switch" : {
+				"field": "enum",
+				"datasource": "namespaces",
+				"enum": "namespaces:devices_switchBinary:deviceId",
+				"required": true
+			},
+			"debug": {
+				"type": "boolean"
+			}
+		},
+		"required": false
+	},
+	"options": {
+		"fields": {
+			"daylight" : {
+				"label": "__l_daylight__",
+				"type": "select",
+				"datasource": "namespaces",
+				"field": "optionLabels",
+				"optionLabels": "namespaces:devices_switchBinary:deviceName"
+			},
+			"sensor" : {
+				"label": "__l_sensor__",
+				"type": "select",
+				"datasource": "namespaces",
+				"field": "optionLabels",
+				"optionLabels": "namespaces:devices_switchBinary:deviceName"
+			},
+			"switch" : {
+				"label": "__l_switch__",
+				"type": "select",
+				"datasource": "namespaces",
+				"field": "optionLabels",
+				"optionLabels": "namespaces:devices_switchBinary:deviceName"
+			},
+			"debug": {
+				"type": "checkbox",
+				"rightLabel": "__rl_debug__"
+			}
+		}
+	}
+}
