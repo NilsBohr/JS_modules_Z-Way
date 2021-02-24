@@ -15,13 +15,13 @@
 			"daylight" : {
 				"field": "enum",
 				"datasource": "namespaces",
-				"enum": "namespaces:devices_switchBinary:deviceId",
+				"enum": "namespaces:devices_sensorBinary:deviceId",
 				"required": true
 			},
 			"sensor" : {
 				"field": "enum",
 				"datasource": "namespaces",
-				"enum": "namespaces:devices_switchBinary:deviceId",
+				"enum": "namespaces:devices_sensorBinary:deviceId",
 				"required": true
 			},
 			"switch" : {
@@ -43,14 +43,14 @@
 				"type": "select",
 				"datasource": "namespaces",
 				"field": "optionLabels",
-				"optionLabels": "namespaces:devices_switchBinary:deviceName"
+				"optionLabels": "namespaces:devices_sensorBinary:deviceName"
 			},
 			"sensor" : {
 				"label": "__l_sensor__",
 				"type": "select",
 				"datasource": "namespaces",
 				"field": "optionLabels",
-				"optionLabels": "namespaces:devices_switchBinary:deviceName"
+				"optionLabels": "namespaces:devices_sensorBinary:deviceName"
 			},
 			"switch" : {
 				"label": "__l_switch__",
