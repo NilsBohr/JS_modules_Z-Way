@@ -31,7 +31,7 @@ CustomFloorHeating.prototype.init = function (config) {
 		if (vDevSensorValue < degreeValue) {
 			if (vDevSwitchValue !== "on") {
 				console.log("DBG[CustomFloorHeating_" + self.id + "]: Switch value is changed state to ON (current temperature value is "+ vDevSensorValue + ")");
-				vDevSwitch.set("metrics:level", "on");
+				vDevSwitch.performCommand("on");
 			}
 			else {
 				console.log("DBG[CustomFloorHeating_" + self.id + "]: Switch is already in ON state. Nothing to do.");
@@ -48,7 +48,7 @@ CustomFloorHeating.prototype.init = function (config) {
 
 		if (vDevSwitchValue !== "off") {
 			console.log("DBG[CustomFloorHeating_" + self.id + "]: Switch value is changed state to OFF");
-			vDevSwitch.set("metrics:level", "off");
+			vDevSwitch.performCommand("off");
 		}
 		else {
 			console.log("DBG[CustomFloorHeating_" + self.id + "]: Switch is already in OFF state. Nothing to do.");
