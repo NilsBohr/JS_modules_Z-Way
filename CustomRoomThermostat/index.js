@@ -89,7 +89,7 @@ CustomRoomThermostat.prototype.checkTemp = function () {
 		self.config.devices.forEach(function(dev) {
 			var vDevX = self.controller.devices.get(dev.device);
 			if (vDevX) {
-				vDevX.set("metrics:level",10);
+				vDevX.performCommand("exact", {level : 10});
 			}
 		});
 	}	
@@ -99,7 +99,7 @@ CustomRoomThermostat.prototype.checkTemp = function () {
 		self.config.devices.forEach(function(dev) {
 			var vDevX = self.controller.devices.get(dev.device);
 			if (vDevX) {
-				vDevX.set("metrics:level",30);
+				vDevX.performCommand("exact", {level : 30});
 			}
 		});
 	}
