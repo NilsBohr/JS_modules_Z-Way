@@ -18,13 +18,13 @@
 				"enum": "namespaces:devices_sensorBinary:deviceId",
 				"required": true
 			},
-			"sensor" : {
+			"trackedDevice" : {
 				"field": "enum",
 				"datasource": "namespaces",
 				"enum": "namespaces:devices_sensorBinary:deviceId",
 				"required": true
 			},
-			"switch" : {
+			"managedDevice" : {
 				"field": "enum",
 				"datasource": "namespaces",
 				"enum": "namespaces:devices_switchBinary:deviceId",
@@ -45,15 +45,15 @@
 				"field": "optionLabels",
 				"optionLabels": "namespaces:devices_sensorBinary:deviceName"
 			},
-			"sensor" : {
-				"label": "__l_sensor__",
+			"trackedDevice" : {
+				"label": "__l_tracked_dev__",
 				"type": "select",
 				"datasource": "namespaces",
 				"field": "optionLabels",
 				"optionLabels": "namespaces:devices_sensorBinary:deviceName"
 			},
-			"switch" : {
-				"label": "__l_switch__",
+			"managedDevice" : {
+				"label": "__l_managed_dev__",
 				"type": "select",
 				"datasource": "namespaces",
 				"field": "optionLabels",
