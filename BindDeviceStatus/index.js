@@ -19,86 +19,53 @@ BindDeviceStatus.prototype.init = function (config) {
 	BindDeviceStatus.super_.prototype.init.call(this, config);
 
 	var self = this;
-
-	var vDevSwitch = this.controller.devices.get(this.config.switch),
-		vDevSensor = this.controller.devices.get(this.config.sensor);
 	this.debugState = this.config.debug;
 	
 	this.checkCondition = function () {
 		if (self.intervalTimer) {
-			if (self.debugState === true) {
-				console.log("---  DBG[BindingDeviceStatus_" + self.id + "]: Detected a running interval timer during function initialization. Clearing interval timer..");
-			}
-
-			clearInterval(self.intervalTimer);
+			clearInterval("}:" + self.intervalTimer);
 		}
 
 		if (self.timeoutTimer) {
-			if (self.debugState === true) {
-				console.log("---  DBG[BindingDeviceStatus_" + self.id + "]: Detected a running timeout timer during function initialization. Clearing timeout timer..");
-			}
-
 			clearTimeout(self.timeoutTimer);
 		}
 		
-		var intervalCounter = 0;
-
-		if (self.debugState === true) {
-			console.log("---  DBG[BindingDeviceStatus_" + self.id + "]: Starting interval timer..");
-		}
-
+		self.intervalCounter = 0;
+		self.debug_log("]: Starting interval timer..");
 		self.intervalTimer = setInterval(function () {
-			if (self.debugState === true) {
-				console.log("---  DBG[BindingDeviceStatus_" + self.id + "]: Interval is on step: " + intervalCounter);
-				console.log("---  DBG[BindingDeviceStatus_" + self.id + "]: Sending a command to request devices status update..");
-			}
+			self.debug_log("]: Interval is on step: " + self.intervalCounter);
+			self.debug_log("]: Sending a command to request devices status update..");
 			
-			vDevSwitch.performCommand("update");
-			vDevSensor.performCommand("update");
+			var managedDevice = self.controller.devices.get(self.config.managedDevice),
+			trackedDevice = self.controller.devices.get(self.config.trackedDevice);
+			
+			managedDevice.performCommand("update");
+			trackedDevice.performCommand("update");
 
-			if (self.debugState === true) {
-				console.log("---  DBG[BindingDeviceStatus_" + self.id + "]: Setting timeout timer on 3 sec. Checking sensors state..");
-			}
-			
+			self.debug_log("]: Setting timeout timer on 5 sec. Checking sensors state..");
 			self.timeoutTimer = setTimeout(function () {
-				if (self.debugState === true) {
-					console.log("---  DBG[BindingDeviceStatus_" + self.id + "]: Timeout is ended! Getting devices states..");
-				}
+				self.debug_log("]: Timeout is ended! Getting devices states..");
+				var managedDeviceValue = managedDevice.get("metrics:level");
+				var trackedDeviceValue = trackedDevice.get("metrics:level");
 
-				var vDevSwitchValue = vDevSwitch.get("metrics:level");
-				var vDevSensorValue = vDevSensor.get("metrics:level");
+				self.debug_log("]: Switch current state is: " + managedDeviceValue);
+				self.debug_log("]: Sensor current state is: " + trackedDeviceValue);
 
-				if (self.debugState === true) {
-					console.log("---  DBG[BindingDeviceStatus_" + self.id + "]: Switch current state is: " + vDevSwitchValue);
-					console.log("---  DBG[BindingDeviceStatus_" + self.id + "]: Sensor current state is: " + vDevSensorValue);
-				}
-
-				if (((vDevSensorValue == "on") && (vDevSwitchValue == "off"))) {
-					if (self.debugState === true) {
-						console.log("---  DBG[BindingDeviceStatus_" + self.id + "]: Condition is checked! Changing vDevSwitch state to ON..");
-					}
-
-					vDevSwitch.set("metrics:level","on");
-				} else if (((vDevSensorValue == "off") && (vDevSwitchValue == "on"))) {
-					if (self.debugState === true) {
-						console.log("---  DBG[BindingDeviceStatus_" + self.id + "]: Condition is checked! Changing vDevSwitch state to OFF..");
-					}
-
-					vDevSwitch.set("metrics:level","off");
+				if (((trackedDeviceValue == "on") && (managedDeviceValue == "off"))) {
+					self.debug_log("]: Condition is checked! Changing managed device state to ON..");
+					managedDevice.performCommand("on");
+				} else if (((trackedDeviceValue == "off") && (managedDeviceValue == "on"))) {
+					self.debug_log("]: Condition is checked! Changing managed device state to OFF..");
+					managedDevice.performCommand("off");
 				} else {
-					if (self.debugState === true) {
-						console.log("---  DBG[BindingDeviceStatus_" + self.id + "]: Condition is checked! Nothing to do.");
-					}
+					self.debug_log("]: Condition is checked! Nothing to do.");
 				}
 			}, 5 * 1000);
 		
-			intervalCounter++;
+			self.intervalCounter++;
 			
-			if (intervalCounter > 29) {
-			if (self.debugState === true) {
-				console.log("---  DBG[BindingDeviceStatus_" + self.id + "]: Job is done! Clearing interval timer..");
-			}
-
+			if (self.intervalCounter > 29) {
+			self.debug_log("]: Job is done! Clearing interval timer..");
 			clearInterval(self.intervalTimer);
 			}	
 		}, 60 * 1000);
@@ -109,18 +76,10 @@ BindDeviceStatus.prototype.init = function (config) {
 
 BindDeviceStatus.prototype.stop = function () {
 	if (this.intervalTimer) {
-		if (this.debugState === true) {
-			console.log("---  DBG[BindingDeviceStatus_" + this.id + "]: Module is stopped and running interval timer is detected! Clearing interval timer..");
-		}
-
 		clearInterval(this.intervalTimer);
 	}
 
 	if (this.timeoutTimer) {
-		if (this.debugState === true) {
-			console.log("---  DBG[BindingDeviceStatus_" + this.id + "]: Module is stopped and running timeout timer is detected! Clearing timeout timer..");
-		}
-
 		clearTimeout(this.timeoutTimer);
 	}
 	
@@ -132,3 +91,9 @@ BindDeviceStatus.prototype.stop = function () {
 // ----------------------------------------------------------------------------
 // --- Module methods
 // ----------------------------------------------------------------------------
+
+BindDeviceStatus.prototype.debug_log = function (msg) {
+	if (this.debugState === true) {
+		console.log("---  DBG[BindingDeviceStatus_" + this.id + msg);
+	}
+}
