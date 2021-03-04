@@ -28,12 +28,16 @@ DevicesPolling.prototype.init = function (config) {
 		clearInterval(this.intervalTimer);
 	}
 
+
+	this.performUpdate = function () {
+		this.debug_log("]: Interval timer is ended. Updating devices status..");
+		this.garageDaylight.performCommand("update");
+		this.householdDaylight.performCommand("update");
+	}
+	
+	
 	this.debug_log("]: Module is started! Starting interval timer..");
-	this.intervalTimer = setInterval(function () {
-		self.debug_log("]: Interval timer is ended. Updating devices status..");
-		self.garageDaylight.performCommand("update");
-		self.householdDaylight.performCommand("update");
-	}, this.config.interval * 60 * 10000)
+	this.intervalTimer = setInterval(this.performUpdate , this.config.interval * 60 * 1000);
 		
 };
 
@@ -53,6 +57,6 @@ DevicesPolling.prototype.stop = function () {
 
 DevicesPolling.prototype.debug_log = function (msg) {
 	if (this.debugState === true) {
-		console.log("---  DBG[BindingDeviceStatus_" + this.id + msg);
+		console.log("---  DBG[DevicesPolling_" + this.id + msg);
 	}
 }
