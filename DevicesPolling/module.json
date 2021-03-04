@@ -26,6 +26,8 @@
 			},
 			"interval": {
 				"type": "number",
+				"minimum": 1,
+				"maximum": 1440,
 				"required": true
 			},
 			"debug": {
