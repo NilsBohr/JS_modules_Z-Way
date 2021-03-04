@@ -15,7 +15,7 @@
 			"garageDaylight" : {
 				"field": "enum",
 				"datasource": "namespaces",
-				"enum": "namespaces:devices_switchBinary:deviceId",
+				"enum": "namespaces:devices_sensorBinary:deviceId",
 				"required": true
 			},
 			"householdDaylight" : {
