@@ -1,0 +1,62 @@
+{
+	"singleton": true,
+	"category": "basic_gateway_modules",
+	"icon": "icon.png",
+	"moduleName":"DevicesPolling",
+	"version": "1.0.0",
+	"maturity": "stable",
+	"defaults": {
+		"title": "__m_title__",
+		"description": "__m_descr__"
+	},
+	"schema": {
+		"type": "object",
+		"properties": {
+			"garageDaylight" : {
+				"field": "enum",
+				"datasource": "namespaces",
+				"enum": "namespaces:devices_switchBinary:deviceId",
+				"required": true
+			},
+			"householdDaylight" : {
+				"field": "enum",
+				"datasource": "namespaces",
+				"enum": "namespaces:devices_switchBinary:deviceId",
+				"required": true
+			},
+			"interval": {
+				"type": "number",
+				"required": true
+			},
+			"debug": {
+				"type": "boolean"
+			}
+		},
+		"required": false
+	},
+	"options": {
+		"fields": {
+			"garageDaylight" : {
+				"label": "__l_garage_daylight__",
+				"type": "select",
+				"datasource": "namespaces",
+				"field": "optionLabels",
+				"optionLabels": "namespaces:devices_switchBinary:deviceName"
+			},
+			"householdDaylight" : {
+				"label": "__l_household_daylight__",
+				"type": "select",
+				"datasource": "namespaces",
+				"field": "optionLabels",
+				"optionLabels": "namespaces:devices_switchBinary:deviceName"
+			},
+			"interval": {
+				"label": "__l_interval__"
+			},
+			"debug": {
+				"type": "checkbox",
+				"rightLabel": "__rl_debug__"
+			}
+		}
+	}
+}
