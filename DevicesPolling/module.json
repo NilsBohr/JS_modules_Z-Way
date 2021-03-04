@@ -43,7 +43,7 @@
 				"type": "select",
 				"datasource": "namespaces",
 				"field": "optionLabels",
-				"optionLabels": "namespaces:devices_switchBinary:deviceName"
+				"optionLabels": "namespaces:devices_sensorBinary:deviceName"
 			},
 			"householdDaylight" : {
 				"label": "__l_household_daylight__",
