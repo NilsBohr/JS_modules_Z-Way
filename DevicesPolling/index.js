@@ -27,8 +27,8 @@ DevicesPolling.prototype.init = function (config) {
 		this.debug_log("]: Interval timer is ended. Updating devices status..");
 		this.garageDaylight.performCommand("update");
 		this.householdDaylight.performCommand("update");
-	}
-	
+	};
+
 	if (this.intervalTimer) {
 		this.debug_log("]: Interval timer is already exist! Clearing interval timer..");
 		clearInterval(this.intervalTimer);
