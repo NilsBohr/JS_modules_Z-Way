@@ -23,18 +23,16 @@ DevicesPolling.prototype.init = function (config) {
 	this.garageDaylight = this.controller.devices.get(this.config.garageDaylight);
 	this.householdDaylight = this.controller.devices.get(this.config.householdDaylight);
 	
-	if (this.intervalTimer) {
-		this.debug_log("]: Interval timer is already exist! Clearing interval timer..");
-		clearInterval(this.intervalTimer);
-	}
-
-
 	this.performUpdate = function () {
 		this.debug_log("]: Interval timer is ended. Updating devices status..");
 		this.garageDaylight.performCommand("update");
 		this.householdDaylight.performCommand("update");
 	}
 	
+	if (this.intervalTimer) {
+		this.debug_log("]: Interval timer is already exist! Clearing interval timer..");
+		clearInterval(this.intervalTimer);
+	}
 	
 	this.debug_log("]: Module is started! Starting interval timer..");
 	this.intervalTimer = setInterval(this.performUpdate , this.config.interval * 60 * 1000);
