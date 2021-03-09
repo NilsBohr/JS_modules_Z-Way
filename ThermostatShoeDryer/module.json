@@ -1,0 +1,95 @@
+{
+	"singleton": false,
+	"category": "automation_basic",
+	"icon": "icon.png",
+	"moduleName":"ThermostatShoeDryer",
+	"version": "1.0",
+	"maturity": "stable",
+	"defaults": {
+		"title": "__m_title__",
+		"description": "__m_descr__",
+		"weekdays": [1, 2, 3, 4, 5, 6, 0]
+	},
+	"schema": {
+		"type": "object",
+		"properties": {
+			"weekdays": {
+				"type": "array",
+				"enum": [1, 2, 3, 4, 5, 6, 0],
+				"required": true
+			},
+			"starttime": {
+				"format":"time",
+				"required": true			
+			},
+			"switch": {
+				"field": "enum",
+				"datasource": "namespaces",
+				"enum": "namespaces:devices_switchBinary:deviceId",
+				"required": true
+			},
+			"offtime": {
+				"type": "number",
+				"required": true
+			},
+			"informer": {
+				"field": "enum",
+				"datasource": "namespaces",
+				"enum": "namespaces:devices_sensorMultiline:deviceId",
+				"required": true
+			},
+			"sensor": {
+				"field": "enum",
+				"datasource": "namespaces",
+				"enum": "namespaces:devices_sensorBinary:deviceId",
+				"required": true
+			},
+			"debug": {
+				"type": "boolean"
+			}
+		},
+		"required": true
+	},
+	"options": {
+		"fields": {
+			"weekdays": {
+				"type": "checkbox",
+				"optionLabels": ["__monday__", "__tuesday__", "__wednesday__", "__thursday__", "__friday__", "__saturday__", "__sunday__"]
+			},
+			"starttime": {
+				"label": "__l_startTime__",
+				"type": "time",
+				"maskString": "99:99",
+				"dateFormat": "HH:mm"			
+			},
+			"switch": {		
+				"label": "__l_switch__",
+				"type": "select",
+				"datasource": "namespaces",
+				"field": "optionLabels",
+				"optionLabels": "namespaces:devices_switchBinary:deviceName"
+			},
+			"offtime": {
+				"label": "__l_offtime__"
+			},
+			"informer": {
+				"label": "__l_informer__",
+				"type": "select",
+				"datasource": "namespaces",
+				"field": "optionLabels",
+				"optionLabels": "namespaces:devices_sensorMultiline:deviceName"
+			},
+			"sensor": {
+				"label": "__l_sensor__",
+				"type": "select",
+				"datasource": "namespaces",
+				"field": "optionLabels",
+				"optionLabels": "namespaces:devices_sensorBinary:deviceName"
+			},
+			"debug": {
+				"type": "checkbox",
+				"rightLabel": "__rl_debug__"
+			}
+		}
+	}
+}
