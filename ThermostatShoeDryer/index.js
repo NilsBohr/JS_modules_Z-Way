@@ -55,7 +55,7 @@ ThermostatShoeDryer.prototype.init = function (config) {
 
 		
 		if (((currentTime >= earlyTime) && (currentTime < startTime)) && (!self.isChecked)) {
-			if (getWeatherValue[0].main === "Clear" && getSensorValue === "on") {
+			if (getWeatherValue[0].main === "Rain" && getSensorValue === "on") {
 				self.isChecked = true;
 			}
 		}
@@ -68,7 +68,7 @@ ThermostatShoeDryer.prototype.init = function (config) {
 			console.log("self.isChecked: " + self.isChecked);
 			console.log("currentTime >= earlyTime: "+ (currentTime >= earlyTime));
 			console.log("currentTime < startTime: " + (currentTime < startTime));
-			console.log("getWeatherValue[0].main === 'Clear': " + (getWeatherValue[0].main === "Clear"));
+			console.log("getWeatherValue[0].main === 'Rain': " + (getWeatherValue[0].main === "Rain"));
 			console.log("getSensorValue === 'on': " + (getSensorValue === "on"));
 			console.log("Switch state: " + getSwitchValue);
 			console.log("@@@@@@@@@@DEBUG@@@@@@@@@@@");
