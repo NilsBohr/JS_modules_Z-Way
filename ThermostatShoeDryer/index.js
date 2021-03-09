@@ -24,23 +24,24 @@ ThermostatShoeDryer.prototype.init = function (config) {
 		
 		if (self.isChecked) {
 			if (vDevSwitch.get("metrics:level") === "off") {
-				vDevSwitch.performCommand("on");
-				console.log("DBG[ThermostatShoeDryer_" + self.id + "]: Switch value is changed state to ON");
-				self.timer = setInterval(function() {
+				vDevSwitch.set("metrics:level", "on");
+				console.log("--- DBG[ThermostatShoeDryer_" + self.id + "]: Switch value is changed state to ON");
+				self.timer = setTimeout(function() {
 					if (vDevSwitch.get("metrics:level") === "on") {
-						vDevSwitch.performCommand("off");
-						console.log("DBG[ThermostatShoeDryer_" + self.id + "]: Switch value is changed state to OFF");
+						vDevSwitch.set("metrics:level", "off");
+						console.log("--- DBG[ThermostatShoeDryer_" + self.id + "]: Switch value is changed state to OFF");
 					}
 					self.isChecked = false;
-					clearInterval(self.timer);
-				}, self.config.offtime*60*60*1000);
+					clearTimeout(self.timer);
+				}, self.config.offtime * 60 * 60 * 1000);
 			}
 		}
 	};
 	this.checkConditions = function() {
 		var vDevWeather = self.controller.devices.get(self.config.informer),
 		vDevSensor = self.controller.devices.get(self.config.sensor),
-		vDevSwitch = self.controller.devices.get(self.config.switch);
+		vDevSwitch = self.controller.devices.get(self.config.switch),
+		configStartTime = self.config.starttime.split(":");
 
 		var getWeatherValue = vDevWeather.get("metrics:zwaveOpenWeather:weather"),
 		getSensorValue = vDevSensor.get("metrics:level"),
@@ -48,25 +49,26 @@ ThermostatShoeDryer.prototype.init = function (config) {
 		
 		var date = new Date();
 
-		var currentTime = date.getHours() + ":" + date.getMinutes(),
-		earlyTime = (date.getHours() - 3) + ":" + date.getMinutes();
+		var startTime = Number(configStartTime[0]) * 60 + Number(configStartTime[1]),
+  		currentTime = date.getHours() * 60 + date.getMinutes(),
+		earlyTime = currentTime - 180;
 
-		var startTime = self.config.starttime;
 		
 		if (((currentTime >= earlyTime) && (currentTime < startTime)) && (!self.isChecked)) {
-			if (getWeatherValue[0].main === "Clouds" && getSensorValue === "on") {
+			if (getWeatherValue[0].main === "Clear" && getSensorValue === "on") {
 				self.isChecked = true;
 			}
 		}
 
 		if (self.config.debug) {
 			console.log("@@@@@@@@@@DEBUG@@@@@@@@@@@");
+			console.log("startTime: " + startTime);
 			console.log("currentTime: " + currentTime);
 			console.log("earlyTime: " + earlyTime);
-			console.log("self.isChecked: "+self.isChecked);
+			console.log("self.isChecked: " + self.isChecked);
 			console.log("currentTime >= earlyTime: "+ (currentTime >= earlyTime));
-			console.log("currentTime <= startTime: " + (currentTime <= startTime));
-			console.log("getWeatherValue[0].main === 'Clouds': " + (getWeatherValue[0].main === "Clouds"));
+			console.log("currentTime < startTime: " + (currentTime < startTime));
+			console.log("getWeatherValue[0].main === 'Clear': " + (getWeatherValue[0].main === "Clear"));
 			console.log("getSensorValue === 'on': " + (getSensorValue === "on"));
 			console.log("Switch state: " + getSwitchValue);
 			console.log("@@@@@@@@@@DEBUG@@@@@@@@@@@");
