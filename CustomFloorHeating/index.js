@@ -28,36 +28,53 @@ CustomFloorHeating.prototype.init = function (config) {
 		vDevSensorValue = vDevSensor.get("metrics:level"),
 		degreeValue = self.config.degree;
 
-		if (vDevSensorValue < degreeValue) {
-			if (vDevSwitchValue !== "on") {
-				console.log("DBG[CustomFloorHeating_" + self.id + "]: Switch value is changed state to ON (current temperature value is "+ vDevSensorValue + ")");
-				vDevSwitch.performCommand("on");
-			}
-			else {
-				console.log("DBG[CustomFloorHeating_" + self.id + "]: Switch is already in ON state. Nothing to do.");
-			}
+		var date = new Date();
+
+		var currentTime = date.getHours() * 60 + date.getMinutes(),
+		startTime = Number(self.config.starttime.split(":")[0]) * 60 + Number(self.config.starttime.split(":")[1]),
+		endTime = Number(self.config.endtime.split(":")[0]) * 60 + Number(self.config.endtime.split(":")[1]);
+
+		if (self.config.debug === true) {
+			console.log("--------CustomFloorHeating_" + self.id +" DEBUG--------");
+			console.log("currentTime is: " + currentTime);
+			console.log("startTime is: " + startTime);
+			console.log("endTime is: " + endTime);
+			console.log("Switch value is: " + vDevSwitchValue);
+			console.log("Sensor value is: " + vDevSensorValue);
+			console.log("Degree condition value is: " + degreeValue);
+			console.log("currentTime >= startTime: " + (currentTime >= startTime));
+			console.log("currentTime < endTime: " + (currentTime < endTime));
+			console.log("vDevSensorValue < degreeValue: " + (vDevSensorValue < degreeValue));
+			console.log("--------CustomFloorHeating_" + self.id +" DEBUG--------");
 		}
-		else {
-			console.log("DBG[CustomFloorHeating_" + self.id + "]: Temperature is not lower than " + degreeValue + " degree (current temperature value is "+ vDevSensorValue +"). Nothing to do.");
+
+		if ((currentTime >= startTime) && (currentTime < endTime)) {
+			if (vDevSensorValue < degreeValue) {
+				if (vDevSwitchValue !== "on") {
+					console.log("--- DBG[CustomFloorHeating_" + self.id + "]: Switch value is changed state to ON (current temperature value is "+ vDevSensorValue + ")");
+					vDevSwitch.performCommand("on");
+				}
+			}
 		}
 	};
+
 	this.stopScene = function() {
 		var vDevSwitch = self.controller.devices.get(self.config.switch);
 	
 		var vDevSwitchValue = vDevSwitch.get("metrics:level");
 
 		if (vDevSwitchValue !== "off") {
-			console.log("DBG[CustomFloorHeating_" + self.id + "]: Switch value is changed state to OFF");
+			console.log("--- DBG[CustomFloorHeating_" + self.id + "]: Switch value is changed state to OFF");
 			vDevSwitch.performCommand("off");
-		}
-		else {
-			console.log("DBG[CustomFloorHeating_" + self.id + "]: Switch is already in OFF state. Nothing to do.");
 		}
 	};
 
+	
+	this.controller.devices.on(this.config.sensor, 'change:metrics:level', this.runScene);
+	
 	// set up cron handler
 	this.controller.on("CustomFloorHeating.run." + self.id, this.runScene);
-	this.controller.on("CustomFloorHeating.stop." + self.id, this.stopScene)
+	this.controller.on("CustomFloorHeating.stop." + self.id, this.stopScene);
 
 	// add cron schedule
 	var wds = this.config.weekdays.map(function(x) { return parseInt(x, 10); });
@@ -88,6 +105,8 @@ CustomFloorHeating.prototype.stop = function () {
 	CustomFloorHeating.super_.prototype.stop.call(this);
 	
 	var self = this;
+
+	this.controller.devices.off(this.config.sensor, 'change:metrics:level', this.runScene);
 
 	this.controller.emit("cron.removeTask", "CustomFloorHeating.run." + this.id);
 	this.controller.off("CustomFloorHeating.run." + this.id, this.runScene);
