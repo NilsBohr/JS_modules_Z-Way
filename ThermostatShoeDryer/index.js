@@ -51,7 +51,7 @@ ThermostatShoeDryer.prototype.init = function (config) {
 
 		var startTime = Number(configStartTime[0]) * 60 + Number(configStartTime[1]),
   		currentTime = date.getHours() * 60 + date.getMinutes(),
-		earlyTime = currentTime - 180;
+		earlyTime = startTime - 180;
 
 		
 		if (((currentTime >= earlyTime) && (currentTime < startTime)) && (!self.isChecked)) {
@@ -61,7 +61,7 @@ ThermostatShoeDryer.prototype.init = function (config) {
 		}
 
 		if (self.config.debug) {
-			console.log("@@@@@@@@@@DEBUG@@@@@@@@@@@");
+			console.log("---------------DEBUG---------------");
 			console.log("startTime: " + startTime);
 			console.log("currentTime: " + currentTime);
 			console.log("earlyTime: " + earlyTime);
@@ -71,7 +71,7 @@ ThermostatShoeDryer.prototype.init = function (config) {
 			console.log("getWeatherValue[0].main === 'Rain': " + (getWeatherValue[0].main === "Rain"));
 			console.log("getSensorValue === 'on': " + (getSensorValue === "on"));
 			console.log("Switch state: " + getSwitchValue);
-			console.log("@@@@@@@@@@DEBUG@@@@@@@@@@@");
+			console.log("---------------DEBUG---------------");
 		}
 	};
 
