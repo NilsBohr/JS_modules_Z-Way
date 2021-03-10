@@ -40,6 +40,9 @@
 			},
 			"degree": {
 				"required": true
+			},
+			"debug": {
+				"type": "boolean"
 			}
 		},
 		"required": true
@@ -79,6 +82,10 @@
 			"degree": {
 				"label": "__l_degree__",
 				"type": "number"
+			},
+			"debug": {
+				"type": "checkbox",
+				"rightLabel": "__rl_debug__"
 			}
 		}
 	}
