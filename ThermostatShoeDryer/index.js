@@ -24,11 +24,11 @@ ThermostatShoeDryer.prototype.init = function (config) {
 		
 		if (self.isChecked) {
 			if (vDevSwitch.get("metrics:level") === "off") {
-				vDevSwitch.set("metrics:level", "on");
+				vDevSwitch.performCommand("on");
 				console.log("--- DBG[ThermostatShoeDryer_" + self.id + "]: Switch value is changed state to ON");
 				self.timer = setTimeout(function() {
 					if (vDevSwitch.get("metrics:level") === "on") {
-						vDevSwitch.set("metrics:level", "off");
+						vDevSwitch.performCommand("off");
 						console.log("--- DBG[ThermostatShoeDryer_" + self.id + "]: Switch value is changed state to OFF");
 					}
 					self.isChecked = false;
