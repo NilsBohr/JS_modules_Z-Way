@@ -1,0 +1,82 @@
+{
+	"singleton": false,
+	"category": "automation_basic",
+	"icon": "icon.png",
+	"moduleName":"FanManager",
+	"version": "1.0",
+	"maturity": "stable",
+	"defaults": {
+		"title": "__m_title__",
+		"description": "__m_descr__"
+	},
+	"schema": {
+		"type": "object",
+		"properties": {
+			"motionSensor": {
+				"field": "enum",
+				"datasource": "namespaces",
+				"enum": "namespaces:devices_sensorBinary:deviceId",
+				"required": true
+			},
+			"temperatureSensor": {
+				"field": "enum",
+				"datasource": "namespaces",
+				"enum": "namespaces:devices_sensorMultilevel:deviceId",
+				"required": true
+			},
+			"degree": {
+				"required": true
+			},
+			"switch": {
+				"field": "enum",
+				"datasource": "namespaces",
+				"enum": "namespaces:devices_switchBinary:deviceId",
+				"required": true
+			},
+			"endtime": {
+				"type" : "number",
+				"required": true			
+			},
+			"debug": {
+				"type": "boolean"
+			}
+		},
+		"required": true
+	},
+	"options": {
+		"fields": {
+			"motionSensor": {
+				"label": "__l_m_sensor__",
+				"type": "select",
+				"datasource": "namespaces",
+				"field": "optionLabels",
+				"optionLabels": "namespaces:devices_sensorBinary:deviceName"
+			},
+			"temperatureSensor": {
+				"label": "__l_t_sensor__",
+				"type": "select",
+				"datasource": "namespaces",
+				"field": "optionLabels",
+				"optionLabels": "namespaces:devices_sensorMultilevel:deviceName"
+			},
+			"degree": {
+				"label": "__l_degree__",
+				"type": "number"
+			},
+			"switch": {		
+				"label": "__l_switch__",
+				"type": "select",
+				"datasource": "namespaces",
+				"field": "optionLabels",
+				"optionLabels": "namespaces:devices_switchBinary:deviceName"
+			},
+			"endtime": {
+				"label": "__l_endTime__"			
+			},
+			"debug": {
+				"type": "checkbox",
+				"rightLabel": "__rl_debug__"
+			}
+		}
+	}
+}
