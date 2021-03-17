@@ -12,10 +12,10 @@
 	"schema": {
 		"type": "object",
 		"properties": {
-			"motionSensor": {
+			"light": {
 				"field": "enum",
 				"datasource": "namespaces",
-				"enum": "namespaces:devices_sensorBinary:deviceId",
+				"enum": "namespaces:devices_switchMultilevel:deviceId",
 				"required": true
 			},
 			"temperatureSensor": {
@@ -33,6 +33,16 @@
 				"enum": "namespaces:devices_switchBinary:deviceId",
 				"required": true
 			},
+			"scene": {
+				"field": "enum",
+				"datasource": "namespaces",
+				"enum": "namespaces:devices_switchControl:deviceId",
+				"required": false
+			},
+			"sceneValue": {
+				"type" : "string",
+				"required": true			
+			},
 			"endtime": {
 				"type" : "number",
 				"required": true			
@@ -45,12 +55,12 @@
 	},
 	"options": {
 		"fields": {
-			"motionSensor": {
-				"label": "__l_m_sensor__",
+			"light": {
+				"label": "__l_light__",
 				"type": "select",
 				"datasource": "namespaces",
 				"field": "optionLabels",
-				"optionLabels": "namespaces:devices_sensorBinary:deviceName"
+				"optionLabels": "namespaces:devices_switchMultilevel:deviceName"
 			},
 			"temperatureSensor": {
 				"label": "__l_t_sensor__",
@@ -69,6 +79,16 @@
 				"datasource": "namespaces",
 				"field": "optionLabels",
 				"optionLabels": "namespaces:devices_switchBinary:deviceName"
+			},
+			"scene": {
+				"label": "__l_scene__",
+				"type": "select",
+				"datasource": "namespaces",
+				"field": "optionLabels",
+				"optionLabels": "namespaces:devices_switchControl:deviceName"
+			},
+			"sceneValue": {
+				"label": "__l_s_value__"			
 			},
 			"endtime": {
 				"label": "__l_endTime__"			
