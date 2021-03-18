@@ -22,11 +22,14 @@ CustomFloorHeating.prototype.init = function (config) {
 
 	this.runScene = function() {
 		var vDevSwitch = self.controller.devices.get(self.config.switch),
-		vDevSensor = self.controller.devices.get(self.config.sensor);
+		vDevSensor = self.controller.devices.get(self.config.sensor),
+		vDevThermostat = self.controller.devices.get(self.config.thermostat);
 	
 		var vDevSwitchValue = vDevSwitch.get("metrics:level"),
 		vDevSensorValue = vDevSensor.get("metrics:level"),
-		degreeValue = self.config.degree;
+		vDevThermostatValue = vDevThermostat.get("metrics:level"),
+		sensorConditionDegree = self.config.sensorConditionDegree,
+		thermostatConditionDegree = self.config.thermostatConditionDegree;
 
 		var date = new Date();
 
@@ -41,18 +44,24 @@ CustomFloorHeating.prototype.init = function (config) {
 			console.log("endTime is: " + endTime);
 			console.log("Switch value is: " + vDevSwitchValue);
 			console.log("Sensor value is: " + vDevSensorValue);
-			console.log("Degree condition value is: " + degreeValue);
+			console.log("Thermostat value is: " + vDevThermostatValue);
+			console.log("Sensor degree condition value is: " + sensorConditionDegree);
+			console.log("Thermostat degree condition value is: " + thermostatConditionDegree);
 			console.log("currentTime >= startTime: " + (currentTime >= startTime));
 			console.log("currentTime < endTime: " + (currentTime < endTime));
-			console.log("vDevSensorValue < degreeValue: " + (vDevSensorValue < degreeValue));
+			console.log("vDevSensorValue < sensorConditionDegree: " + (vDevSensorValue < sensorConditionDegree));
 			console.log("--------CustomFloorHeating_" + self.id +" DEBUG--------");
 		}
 
 		if ((currentTime >= startTime) && (currentTime < endTime)) {
-			if (vDevSensorValue < degreeValue) {
+			if (vDevSensorValue < sensorConditionDegree) {
 				if (vDevSwitchValue !== "on") {
-					console.log("--- DBG[CustomFloorHeating_" + self.id + "]: Switch value is changed state to ON (current temperature value is "+ vDevSensorValue + ")");
+					console.log("--- DBG[CustomFloorHeating_" + self.id + "]: Switch value is changed state to ON (current temperature value is "+ vDevSensorValue + ", current time is: " + date.getHours() + ":" + date.getMinutes()+ ")");
 					vDevSwitch.performCommand("on");
+					if (vDevThermostatValue !== thermostatConditionDegree) {
+						vDevThermostat.performCommand("exact", {level : thermostatConditionDegree});
+						console.log("--- DBG[CustomFloorHeating_" + self.id + "]: Thermostat value was: " + vDevThermostatValue + ". Thermostat value set to: "+  thermostatConditionDegree);
+					}
 				}
 			}
 		}
@@ -63,8 +72,10 @@ CustomFloorHeating.prototype.init = function (config) {
 	
 		var vDevSwitchValue = vDevSwitch.get("metrics:level");
 
+		var date = new Date();
+
 		if (vDevSwitchValue !== "off") {
-			console.log("--- DBG[CustomFloorHeating_" + self.id + "]: Switch value is changed state to OFF");
+			console.log("--- DBG[CustomFloorHeating_" + self.id + "]: Switch value is changed state to OFF (current time is: " + date.getHours() + ":" + date.getMinutes()+ ")");
 			vDevSwitch.performCommand("off");
 		}
 	};

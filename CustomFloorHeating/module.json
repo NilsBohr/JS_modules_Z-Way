@@ -38,7 +38,18 @@
 				"enum": "namespaces:devices_sensorMultilevel:deviceId",
 				"required": true
 			},
-			"degree": {
+			"sensorConditionDegree": {
+				"type": "number",
+				"required": true
+			},
+			"thermostat": {
+				"field": "enum",
+				"datasource": "namespaces",
+				"enum": "namespaces:devices_thermostat:deviceId",
+				"required": true
+			},
+			"thermostatConditionDegree": {
+				"type": "number",
 				"required": true
 			},
 			"debug": {
@@ -79,9 +90,18 @@
 				"field": "optionLabels",
 				"optionLabels": "namespaces:devices_sensorMultilevel:deviceName"
 			},
-			"degree": {
-				"label": "__l_degree__",
-				"type": "number"
+			"sensorConditionDegree": {
+				"label": "__l_s_degree__"
+			},
+			"thermostat": {
+				"label": "__l_thermostat__",
+				"type": "select",
+				"datasource": "namespaces",
+				"field": "optionLabels",
+				"optionLabels": "namespaces:devices_thermostat:deviceName"
+			},
+			"thermostatConditionDegree": {
+				"label": "__l_t_degree__"
 			},
 			"debug": {
 				"type": "checkbox",
