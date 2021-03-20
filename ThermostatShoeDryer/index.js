@@ -64,20 +64,17 @@ ThermostatShoeDryer.prototype.init = function (config) {
 				self.isChecked = true;
 			}
 		}
-
-		if (self.config.debug) {
-			self.debug_log("---------------DEBUG---------------");
-			self.debug_log("startTime: " + startTime);
-			self.debug_log("currentTime: " + currentTime);
-			self.debug_log("earlyTime: " + earlyTime);
-			self.debug_log("self.isChecked: " + self.isChecked);
-			self.debug_log("currentTime >= earlyTime: "+ (currentTime >= earlyTime));
-			self.debug_log("currentTime < startTime: " + (currentTime < startTime));
-			self.debug_log("getWeatherValue[0].main === 'Rain': " + (getWeatherValue[0].main === "Rain"));
-			self.debug_log("getSensorValue === 'on': " + (getSensorValue === "on"));
-			self.debug_log("Switch state: " + getSwitchValue);
-			self.debug_log("---------------DEBUG---------------");
-		}
+		self.debug_log("-----ThermostatShoeDryer" + self.id + "DEBUG-----");
+		self.debug_log("startTime: " + startTime);
+		self.debug_log("currentTime: " + currentTime);
+		self.debug_log("earlyTime: " + earlyTime);
+		self.debug_log("self.isChecked: " + self.isChecked);
+		self.debug_log("currentTime >= earlyTime: "+ (currentTime >= earlyTime));
+		self.debug_log("currentTime < startTime: " + (currentTime < startTime));
+		self.debug_log("getWeatherValue[0].main === 'Rain': " + (getWeatherValue[0].main === "Rain"));
+		self.debug_log("getSensorValue === 'on': " + (getSensorValue === "on"));
+		self.debug_log("Switch state: " + getSwitchValue);
+		self.debug_log("-----ThermostatShoeDryer" + self.id + "DEBUG-----");
 	};
 
 	// set up cron handler
