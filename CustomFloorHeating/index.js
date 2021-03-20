@@ -37,30 +37,28 @@ CustomFloorHeating.prototype.init = function (config) {
 		startTime = Number(self.config.starttime.split(":")[0]) * 60 + Number(self.config.starttime.split(":")[1]),
 		endTime = Number(self.config.endtime.split(":")[0]) * 60 + Number(self.config.endtime.split(":")[1]);
 
-		if (self.config.debug === true) {
-			console.log("--------CustomFloorHeating_" + self.id +" DEBUG--------");
-			console.log("currentTime is: " + currentTime);
-			console.log("startTime is: " + startTime);
-			console.log("endTime is: " + endTime);
-			console.log("Switch value is: " + vDevSwitchValue);
-			console.log("Sensor value is: " + vDevSensorValue);
-			console.log("Thermostat value is: " + vDevThermostatValue);
-			console.log("Sensor degree condition value is: " + sensorConditionDegree);
-			console.log("Thermostat degree condition value is: " + thermostatConditionDegree);
-			console.log("currentTime >= startTime: " + (currentTime >= startTime));
-			console.log("currentTime < endTime: " + (currentTime < endTime));
-			console.log("vDevSensorValue < sensorConditionDegree: " + (vDevSensorValue < sensorConditionDegree));
-			console.log("--------CustomFloorHeating_" + self.id +" DEBUG--------");
-		}
+		self.debug_log("--------CustomFloorHeating_" + self.id +" DEBUG--------");
+		self.debug_log("currentTime is: " + currentTime);
+		self.debug_log("startTime is: " + startTime);
+		self.debug_log("endTime is: " + endTime);
+		self.debug_log("Switch value is: " + vDevSwitchValue);
+		self.debug_log("Sensor value is: " + vDevSensorValue);
+		self.debug_log("Thermostat value is: " + vDevThermostatValue);
+		self.debug_log("Sensor degree condition value is: " + sensorConditionDegree);
+		self.debug_log("Thermostat degree condition value is: " + thermostatConditionDegree);
+		self.debug_log("currentTime >= startTime: " + (currentTime >= startTime));
+		self.debug_log("currentTime < endTime: " + (currentTime < endTime));
+		self.debug_log("vDevSensorValue < sensorConditionDegree: " + (vDevSensorValue < sensorConditionDegree));
+		self.debug_log("--------CustomFloorHeating_" + self.id +" DEBUG--------");
 
 		if ((currentTime >= startTime) && (currentTime < endTime)) {
 			if (vDevSensorValue < sensorConditionDegree) {
 				if (vDevSwitchValue !== "on") {
-					console.log("--- DBG[CustomFloorHeating_" + self.id + "]: Switch value is changed state to ON (current temperature value is "+ vDevSensorValue + ", current time is: " + date.getHours() + ":" + date.getMinutes()+ ")");
+					self.debug_log("Switch value is changed state to ON (current temperature value is "+ vDevSensorValue + ", current time is: " + date.getHours() + ":" + date.getMinutes()+ ")");
 					vDevSwitch.performCommand("on");
 					if (vDevThermostatValue !== thermostatConditionDegree) {
 						vDevThermostat.performCommand("exact", {level : thermostatConditionDegree});
-						console.log("--- DBG[CustomFloorHeating_" + self.id + "]: Thermostat value was: " + vDevThermostatValue + ". Thermostat value set to: "+  thermostatConditionDegree);
+						self.debug_log("Thermostat value was: " + vDevThermostatValue + ". Thermostat value set to: "+  thermostatConditionDegree);
 					}
 				}
 			}
@@ -75,8 +73,11 @@ CustomFloorHeating.prototype.init = function (config) {
 		var date = new Date();
 
 		if (vDevSwitchValue !== "off") {
-			console.log("--- DBG[CustomFloorHeating_" + self.id + "]: Switch value is changed state to OFF (current time is: " + date.getHours() + ":" + date.getMinutes()+ ")");
+			self.debug_log("Switch value is changed state to OFF (current time is: " + date.getHours() + ":" + date.getMinutes()+ ")");
 			vDevSwitch.performCommand("off");
+		}
+		else {
+			self.debug_log("Switch is already OFF (current time is: " + date.getHours() + ":" + date.getMinutes()+ ")");
 		}
 	};
 
@@ -129,3 +130,9 @@ CustomFloorHeating.prototype.stop = function () {
 // ----------------------------------------------------------------------------
 // --- Module methods
 // ----------------------------------------------------------------------------
+
+CustomFloorHeating.prototype.debug_log = function (msg) {
+	if (this.config.debug) {
+		console.log("---  DBG[CustomFloorHeating_" + this.id + "]: " + msg);
+	}
+}
