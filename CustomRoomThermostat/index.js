@@ -76,10 +76,12 @@ CustomRoomThermostat.prototype.checkTemp = function () {
 	mainThermostatValue = vDev.get("metrics:level"),
 	delta = this.config.delta;
 	
+	this.debug_log("------------CustomRoomThermostat_" + this.id +" DEBUG------------");
 	this.debug_log("sensorValue variable value is" + sensorValue);
 	this.debug_log("mainThermostat variable value is" + mainThermostatValue);
 	this.debug_log("delta variable value is" + delta);
 	this.debug_log("Array of managed devices value is" + JSON.stringify(self.config.devices));
+	this.debug_log("------------CustomRoomThermostat_" + this.id +" DEBUG------------");
 
 	if ((sensorValue > (mainThermostatValue + delta)) && (global.climatState != "cooling")) {
 		this.debug_log("Sensor's temperature is too hot. Setting thermostats temperature to 10 degree.");

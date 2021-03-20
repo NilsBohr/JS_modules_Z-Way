@@ -37,7 +37,7 @@ CustomFloorHeating.prototype.init = function (config) {
 		startTime = Number(self.config.starttime.split(":")[0]) * 60 + Number(self.config.starttime.split(":")[1]),
 		endTime = Number(self.config.endtime.split(":")[0]) * 60 + Number(self.config.endtime.split(":")[1]);
 
-		self.debug_log("--------CustomFloorHeating_" + self.id +" DEBUG--------");
+		self.debug_log("------------CustomFloorHeating_" + self.id +" DEBUG------------");
 		self.debug_log("currentTime is: " + currentTime);
 		self.debug_log("startTime is: " + startTime);
 		self.debug_log("endTime is: " + endTime);
@@ -49,7 +49,7 @@ CustomFloorHeating.prototype.init = function (config) {
 		self.debug_log("currentTime >= startTime: " + (currentTime >= startTime));
 		self.debug_log("currentTime < endTime: " + (currentTime < endTime));
 		self.debug_log("vDevSensorValue < sensorConditionDegree: " + (vDevSensorValue < sensorConditionDegree));
-		self.debug_log("--------CustomFloorHeating_" + self.id +" DEBUG--------");
+		self.debug_log("------------CustomFloorHeating_" + self.id +" DEBUG------------");
 
 		if ((currentTime >= startTime) && (currentTime < endTime)) {
 			if (vDevSensorValue < sensorConditionDegree) {
