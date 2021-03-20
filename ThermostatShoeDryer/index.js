@@ -20,16 +20,21 @@ ThermostatShoeDryer.prototype.init = function (config) {
 	var self = this;
 
 	this.runScene = function() {
-		var vDevSwitch = self.controller.devices.get(self.config.switch);
+		var vDevSwitch = self.controller.devices.get(self.config.switch),
+		vDevThermostat = self.controller.devices.get(self.config.thermostat);
 		
 		if (self.isChecked) {
 			if (vDevSwitch.get("metrics:level") === "off") {
 				vDevSwitch.performCommand("on");
-				console.log("--- DBG[ThermostatShoeDryer_" + self.id + "]: Switch value is changed state to ON");
+				if (vDevThermostat.get("metrics:level") !== self.config.thermostatConditionDegree) {
+					vDevThermostat.performCommand("exact", {level : self.config.thermostatConditionDegree});
+					self.debug_log("Thermostat changed its value to: " + self.config.thermostatConditionDegree);
+				}
+				self.debug_log("Switch value is changed state to ON");
 				self.timer = setTimeout(function() {
 					if (vDevSwitch.get("metrics:level") === "on") {
 						vDevSwitch.performCommand("off");
-						console.log("--- DBG[ThermostatShoeDryer_" + self.id + "]: Switch value is changed state to OFF");
+						self.debug_log("Switch value is changed state to OFF");
 					}
 					self.isChecked = false;
 					clearTimeout(self.timer);
@@ -61,17 +66,17 @@ ThermostatShoeDryer.prototype.init = function (config) {
 		}
 
 		if (self.config.debug) {
-			console.log("---------------DEBUG---------------");
-			console.log("startTime: " + startTime);
-			console.log("currentTime: " + currentTime);
-			console.log("earlyTime: " + earlyTime);
-			console.log("self.isChecked: " + self.isChecked);
-			console.log("currentTime >= earlyTime: "+ (currentTime >= earlyTime));
-			console.log("currentTime < startTime: " + (currentTime < startTime));
-			console.log("getWeatherValue[0].main === 'Rain': " + (getWeatherValue[0].main === "Rain"));
-			console.log("getSensorValue === 'on': " + (getSensorValue === "on"));
-			console.log("Switch state: " + getSwitchValue);
-			console.log("---------------DEBUG---------------");
+			self.debug_log("---------------DEBUG---------------");
+			self.debug_log("startTime: " + startTime);
+			self.debug_log("currentTime: " + currentTime);
+			self.debug_log("earlyTime: " + earlyTime);
+			self.debug_log("self.isChecked: " + self.isChecked);
+			self.debug_log("currentTime >= earlyTime: "+ (currentTime >= earlyTime));
+			self.debug_log("currentTime < startTime: " + (currentTime < startTime));
+			self.debug_log("getWeatherValue[0].main === 'Rain': " + (getWeatherValue[0].main === "Rain"));
+			self.debug_log("getSensorValue === 'on': " + (getSensorValue === "on"));
+			self.debug_log("Switch state: " + getSwitchValue);
+			self.debug_log("---------------DEBUG---------------");
 		}
 	};
 
@@ -113,3 +118,9 @@ ThermostatShoeDryer.prototype.stop = function () {
 // ----------------------------------------------------------------------------
 // --- Module methods
 // ----------------------------------------------------------------------------
+
+ThermostatShoeDryer.prototype.debug_log = function (msg) {
+	if (this.config.debug) {
+		console.log("---  DBG[ThermostatShoeDryer_" + this.id + "]: " + msg);
+	}
+}

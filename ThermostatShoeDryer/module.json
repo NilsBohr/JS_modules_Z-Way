@@ -44,6 +44,16 @@
 				"enum": "namespaces:devices_sensorBinary:deviceId",
 				"required": true
 			},
+			"thermostat": {
+				"field": "enum",
+				"datasource": "namespaces",
+				"enum": "namespaces:devices_thermostat:deviceId",
+				"required": true
+			},
+			"thermostatConditionDegree": {
+				"type": "number",
+				"required": true
+			},
 			"debug": {
 				"type": "boolean"
 			}
@@ -85,6 +95,16 @@
 				"datasource": "namespaces",
 				"field": "optionLabels",
 				"optionLabels": "namespaces:devices_sensorBinary:deviceName"
+			},
+			"thermostat": {
+				"label": "__l_thermostat__",
+				"type": "select",
+				"datasource": "namespaces",
+				"field": "optionLabels",
+				"optionLabels": "namespaces:devices_thermostat:deviceName"
+			},
+			"thermostatConditionDegree": {
+				"label": "__l_t_degree__"
 			},
 			"debug": {
 				"type": "checkbox",

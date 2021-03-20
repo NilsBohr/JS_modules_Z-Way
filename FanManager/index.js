@@ -36,7 +36,7 @@ FanManager.prototype.init = function (config) {
 				if (vDevTSensorValue > self.config.degree) {
 					if (vDevSwitchValue !== "on") {
 						vDevSwitch.performCommand("on");
-						console.log("---  DBG[FanManager_" + self.id + "]: Sensor's temperature is changed. It's value is more than " + self.config.degree + " (current value is: " + vDevTSensorValue + "). Fan is turned ON.");
+						self.debug_log("Sensor's temperature is changed. It's value is more than " + self.config.degree + " (current value is: " + vDevTSensorValue + "). Fan is turned ON.");
 						self.isTurnedOnViaTemperatureSensor = true;
 					} else {
 						self.debug_log("Sensor's temperature is changed. It's value is more than " + self.config.degree + " (current value is: " + vDevTSensorValue + "), but fan is already ON. Nothing to do.");
@@ -44,7 +44,7 @@ FanManager.prototype.init = function (config) {
 				} else if (vDevTSensorValue < self.config.degree) {
 					if (vDevSwitchValue !== "off") {
 						vDevSwitch.performCommand("off");
-						console.log("---  DBG[FanManager_" + self.id + "]: Sensor's temperature is changed. It's value is lower than " + self.config.degree + " (current value is: " + vDevTSensorValue + "). Fan is turned OFF.");
+						self.debug_log("Sensor's temperature is changed. It's value is lower than " + self.config.degree + " (current value is: " + vDevTSensorValue + "). Fan is turned OFF.");
 						self.isTurnedOnViaTemperatureSensor = false;
 					} else {
 						self.debug_log("Sensor's temperature is changed. It's value is lower than " + self.config.degree + " (current value is: " + vDevTSensorValue + "), but fan is already OFF. Nothing to do.");
@@ -70,19 +70,19 @@ FanManager.prototype.init = function (config) {
 			self.debug_log("Light changed state to on. Nothing to do.");
 		} else {
 			self.isEnabledManualMode = false;
-			console.log("---  DBG[FanManager_" + self.id + "]: Manual mode is disabled.");
+			self.debug_log("Manual mode is disabled.");
 			if (!self.isTurnedOnViaTemperatureSensor) {
 				self.debug_log("Light changed state to OFF. Checking fan state..");
 				if (vDevSwitchValue !== "on") {
 					vDevSwitch.performCommand("on");
-					console.log("---  DBG[FanManager_" + self.id + "]: Fan is turned on for " + self.config.endtime + " min.");
+					self.debug_log("Fan is turned on for " + self.config.endtime + " min.");
 					self.isTurnedOnViaLight = true;
 					self.clear_timeout(self.timeoutTimer);
 
 					self.timeoutTimer = setTimeout (function () {
 						if ((vDevSwitch.get("metrics:level") !== "off") && (vDevTSensor.get("metrics:level") < self.config.degree)) {
 							vDevSwitch.performCommand("off");
-							console.log("---  DBG[FanManager_" + self.id + "]: Timer is ended. Fan is turned OFF.");
+							self.debug_log("Timer is ended. Fan is turned OFF.");
 						} else if ((vDevSwitch.get("metrics:level") !== "off") && (vDevTSensor.get("metrics:level") > self.config.degree)) {
 							self.debug_log("Timer is ended, but temperature sensor value is still more than " + self.config.degree + " (current value is: " + vDevTSensor.get("metrics:level") + "). Nothing to do.");
 						} else {
@@ -119,15 +119,15 @@ FanManager.prototype.init = function (config) {
 			if (vDevLightValue > 0) {
 				if (!self.isEnabledManualMode) {
 					self.isEnabledManualMode = true;
-					console.log("---  DBG[FanManager_" + self.id + "]: Manual mode is enabled.");
+					self.debug_log("Manual mode is enabled.");
 				}
 
 				if (vDevSwitchValue !== "on") {
 					vDevSwitch.performCommand("on");
-					console.log("---  DBG[FanManager_" + self.id + "]: Fan is manually enabled.");
+					self.debug_log("Fan is manually enabled.");
 				} else {
 					vDevSwitch.performCommand("off");
-					console.log("---  DBG[FanManager_" + self.id + "]: Fan is manually disabled.");
+					self.debug_log("Fan is manually disabled.");
 				}
 			}
 		}
