@@ -1,0 +1,50 @@
+{
+	"singleton" : false,
+	"dependencies": [],
+	"category": "automation_basic",
+	"icon": "icon.png",
+	"moduleName": "ConditionerManager",
+	"version": "1.1.0",
+	"maturity": "stable",
+	"defaults" : {
+		"title" : "__m_title__",
+		"description" : "__m_descr__"
+	},
+	"schema" : {
+		"type" : "object",
+		"properties" : {
+			"node": {
+				"type": "number",
+				"required": true
+			},
+			"commandclass": {
+				"type": "number",
+				"required": true
+			},
+			"instance": {
+				"type": "number",
+				"required": true
+			},
+			"debug": {
+				"type": "boolean"
+			}
+		}
+	},
+	"options" : {
+		"fields" : {
+			"node": {
+				"label": "__l_node__"
+			},
+			"commandclass": {
+				"label": "__l_commandclass__"
+			},
+			"instance": {
+				"label": "__l_instance__"
+			},
+			"debug": {
+				"type": "checkbox",
+				"rightLabel": "__rl_debug__"
+			}
+		}
+	}
+}

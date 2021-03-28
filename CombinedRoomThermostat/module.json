@@ -1,0 +1,253 @@
+{
+	"dependencies": [],
+	"singleton": false,
+	"category": "device_enhancements",
+	"author": "",
+	"homepage": "",
+	"icon": "icon.png",
+		"moduleName":"CombinedRoomThermostat",
+	"version": "1.0",
+	"maturity": "stable",
+	"defaults": {
+		"title": "__m_title__",
+		"description": "__m_descr__",
+		"sensor": ""
+	},
+	"schema": {
+		"type": "object",
+		"properties": {
+			"thermostats": {
+				"type": "array",
+				"items": {
+					"type": "object",
+					"properties": {
+						"device": {
+							"field": "enum",
+							"datasource": "namespaces",
+							"enum": "namespaces:devices_thermostat:deviceId",
+							"required": true
+						}
+					}
+				}
+			},
+			"temperatureSensor": {
+				"field": "enum",
+				"datasource": "namespaces",
+				"enum": "namespaces:devices_sensorMultilevel:deviceId",
+				"required": true
+			},
+			"delta": {
+				"minimum": 1,
+				"maximum": 10,
+				"required": true
+			},
+			"useTime": {
+				"type": "checkbox"
+			},
+			"firstTimeCondition": {
+				"format": "time",
+				"required": true,
+				"dependencies": "useTime"
+			},
+			"firstDegreeCondition": {
+				"required": true,
+				"minimum": 10,
+				"maximum": 30,
+				"dependencies": "useTime"
+			},
+			"secondTimeCondition": {
+				"format": "time",
+				"required": true,
+				"dependencies": "useTime"
+			},
+			"secondDegreeCondition": {
+				"required": true,
+				"minimum": 10,
+				"maximum": 30,
+				"dependencies": "useTime"
+			},
+			"useConditionerAndCurtain": {
+				"type": "checkbox"
+			},
+			"presenceSwitch": {
+				"field": "enum",
+				"datasource": "namespaces",
+				"enum": "namespaces:devices_switchBinary:deviceId",
+				"dependencies": "useConditionerAndCurtain",
+				"required": true
+			},
+			"daylightSensor": {
+				"field": "enum",
+				"datasource": "namespaces",
+				"enum": "namespaces:devices_sensorBinary:deviceId",
+				"dependencies": "useConditionerAndCurtain",
+				"required": true
+			},
+			"conditioner": {
+				"field": "enum",
+				"datasource": "namespaces",
+				"enum": "namespaces:devices_switchBinary:deviceId",
+				"dependencies": "useConditionerAndCurtain",
+				"required": true
+			},
+			"conditionerDegreeCondition": {
+				"type": "number",
+				"dependencies": "useConditionerAndCurtain"
+			},
+			"conditionerTimeCondition": {
+				"type": "number",
+				"dependencies": "useConditionerAndCurtain"
+			},
+			"curtain": {
+				"field": "enum",
+				"datasource": "namespaces",
+				"enum": "namespaces:devices_switchMultilevel:deviceId",
+				"dependencies": "useConditionerAndCurtain",
+				"required": true
+			},
+			"curtainLevelCondition": {
+				"type": "number",
+				"dependencies": "useConditionerAndCurtain"
+			},
+			"debug": {
+				"type": "checkbox"
+			}
+			
+		},
+		"required": false
+	},
+	"options": {
+		"fields": {
+			"thermostats": {
+				"label": "__l_thermostats__",
+				"fields": {
+					"item": {
+						"fields": {
+							"device": {
+								"label": "",
+								"type": "select",
+								"datasource": "namespaces",
+								"field": "optionLabels",
+								"optionLabels": "namespaces:devices_thermostat:deviceName"
+							}
+						}
+					}
+				}
+			},
+			"temperatureSensor": {
+				"label": "__l_t_sensor__",
+				"type": "select",
+				"datasource": "namespaces",
+				"field": "optionLabels",
+				"optionLabels": "namespaces:devices_sensorMultilevel:deviceName"
+			},
+			"delta": {
+				"label": "__l_delta__",
+				"type": "number",
+				"helper": "__h_delta__"
+			},
+			"useTime": {
+				"type": "checkbox",
+				"rightLabel": "__rl_time__"
+			},
+			"firstTimeCondition": {
+				"type": "time",
+				"label": "__l_f_t_condition__",
+				"maskString": "99:99",
+				"dateFormat": "HH:mm",
+				"dependencies": {
+					"useTime": true
+				}
+			},
+			"firstDegreeCondition": {
+				"type": "number",
+				"label": "__l_f_d_condition__",
+				"dependencies": {
+					"useTime": true
+				}
+			},
+			"secondTimeCondition": {
+				"type": "time",
+				"label": "__l_s_t_condition__",
+				"maskString": "99:99",
+				"dateFormat": "HH:mm",
+				"dependencies": {
+					"useTime": true
+				}
+			},
+			"secondDegreeCondition": {
+				"type": "number",
+				"label": "__l_s_d_condition__",
+				"dependencies": {
+					"useTime": true
+				}
+			},
+			"useConditionerAndCurtain": {
+				"type": "checkbox",
+				"rightLabel": "__rl_conditioner_curtain__"
+			},
+			"presenceSwitch": {
+				"label": "__l_p_switch__",
+				"type": "select",
+				"dependencies": {
+					"useConditionerAndCurtain": true
+				},
+				"datasource": "namespaces",
+				"field": "optionLabels",
+				"optionLabels": "namespaces:devices_switchBinary:deviceName"
+			},
+			"daylightSensor": {
+				"label": "__l_d_sensor__",
+				"type": "select",
+				"dependencies": {
+					"useConditionerAndCurtain": true
+				},
+				"datasource": "namespaces",
+				"field": "optionLabels",
+				"optionLabels": "namespaces:devices_sensorBinary:deviceName"
+			},
+			"conditioner": {
+				"label": "__l_conditioner__",
+				"type": "select",
+				"dependencies": {
+					"useConditionerAndCurtain": true
+				},
+				"datasource": "namespaces",
+				"field": "optionLabels",
+				"optionLabels": "namespaces:devices_switchBinary:deviceName"
+			},
+			"conditionerDegreeCondition": {
+				"label": "__l_con_degree__",
+				"dependencies": {
+					"useConditionerAndCurtain": true
+				}
+			},
+			"conditionerTimeCondition": {
+				"label": "__l_con_time__",
+				"dependencies": {
+					"useConditionerAndCurtain": true
+				}
+			},
+			"curtainLevelCondition": {
+				"label": "__l_cur_level__",
+				"dependencies": {
+					"useConditionerAndCurtain": true
+				}
+			},
+			"curtain": {
+				"label": "__l_curtain__",
+				"type": "select",
+				"dependencies": {
+					"useConditionerAndCurtain": true
+				},
+				"datasource": "namespaces",
+				"field": "optionLabels",
+				"optionLabels": "namespaces:devices_switchMultilevel:deviceName"
+			},
+			"debug": {
+				"type": "checkbox",
+				"rightLabel": "__rl_debug__"
+			}
+		}
+	}
+}
