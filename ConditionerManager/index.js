@@ -35,10 +35,10 @@ ConditionerManager.prototype.init = function (config) {
 			if (command != 'update') {
 				if (command === 'on') {
 					self.vDev.set('metrics:level', command);
-					//zway.devices[self.config.nodeId].instances[self.config.instanceId].commandClasses[self.config.commandClassId].Set(5);
+					zway.devices[self.config.nodeId].instances[self.config.instanceId].commandClasses[self.config.commandClassId].Set(5);
 				} else if (command === 'off') {
 					self.vDev.set('metrics:level', command);
-					//zway.devices[self.config.nodeId].instances[self.config.instanceId].commandClasses[self.config.commandClassId].Set(0);
+					zway.devices[self.config.nodeId].instances[self.config.instanceId].commandClasses[self.config.commandClassId].Set(0);
 				}
 			}
 		},
