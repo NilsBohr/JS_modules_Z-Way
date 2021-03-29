@@ -152,7 +152,7 @@ CombinedRoomThermostat.prototype.init = function (config) {
 								} else {
 									self.debug_log("Air conditioners thermostat value is already at " + self.config.airConditionerDegreeValue);
 								}
-							}, 3 * 1000 * 1000)
+							}, 3 * 1000)
 							
 
 							self.debug_log("Air conditioner is enabled for " + self.config.airConditionerTimeCondition + "hour(s)");
