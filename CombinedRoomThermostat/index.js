@@ -147,7 +147,7 @@ CombinedRoomThermostat.prototype.init = function (config) {
 							
 							setTimeout(function() {
 								if (airConditionerThermostatValue !== self.config.airConditionerDegreeValue) {
-									conditionerThermostat.performCommand("exact", {level : self.config.airConditionerDegreeValue});
+									airConditionerThermostat.performCommand("exact", {level : self.config.airConditionerDegreeValue});
 									self.debug_log("Air conditioners thermostat value is set to " + self.config.airConditionerDegreeValue);
 								} else {
 									self.debug_log("Air conditioners thermostat value is already at " + self.config.airConditionerDegreeValue);
