@@ -44,33 +44,39 @@ CombinedRoomThermostat.prototype.init = function (config) {
 
 	// Handling slave thermostats temperature
 	this.checkThermostatsTemp = function () {
-		var vDevSensor = self.controller.devices.get(self.config.temperatureSensor),
-		vDev = self.vDev;
+		var temperatureSensor = self.controller.devices.get(self.config.temperatureSensor),
+		weatherSensor = self.controller.devices.get(self.config.weatherSensor),
+		mainThermostat = self.vDev;
 	
-		var sensorValue = vDevSensor.get("metrics:level"),
-		mainThermostatValue = vDev.get("metrics:level"),
+		var temperatureSensorValue = temperatureSensor.get("metrics:level"),
+		weatherSensorValue = weatherSensor.get("metrics:level"),
+		mainThermostatValue = mainThermostat.get("metrics:level"),
 		delta = self.config.delta;
-	
-		if ((sensorValue > (mainThermostatValue + delta)) && (global.climatState != "cooling")) {
-			self.debug_log("Sensor's temperature changed and is too hot. Setting thermostats temperature to 10 degree.");
-			global.climatState = "cooling";
-			self.config.thermostats.forEach(function(dev) {
-				var vDevX = self.controller.devices.get(dev.device);
-				if (vDevX && vDevX.get("metrics:level") !== 10) {
-					vDevX.performCommand("exact", {level : 10});
-				}
-			});
-		} else if ((sensorValue < (mainThermostatValue - delta)) && (global.climatState != "heating")) {
-			self.debug_log("Sensor's temperature changed and is too cold. Setting thermostats temperature to 30 degree.");
-			global.climatState = "heating";
-			self.config.thermostats.forEach(function(dev) {
-				var vDevX = self.controller.devices.get(dev.device);
-				if (vDevX && vDevX.get("metrics:level") !== 30) {
-					vDevX.performCommand("exact", {level : 30});
-				}
-			});
+		
+		if (weatherSensorValue < 5) {
+			if ((temperatureSensorValue > (mainThermostatValue + delta)) && (global.climatState != "cooling")) {
+				self.debug_log("Sensor's temperature changed and is too hot. Setting thermostats temperature to 10 degree.");
+				global.climatState = "cooling";
+				self.config.thermostats.forEach(function(dev) {
+					var vDevX = self.controller.devices.get(dev.device);
+					if (vDevX && vDevX.get("metrics:level") !== 10) {
+						vDevX.performCommand("exact", {level : 10});
+					}
+				});
+			} else if ((temperatureSensorValue < (mainThermostatValue - delta)) && (global.climatState != "heating")) {
+				self.debug_log("Sensor's temperature changed and is too cold. Setting thermostats temperature to 30 degree.");
+				global.climatState = "heating";
+				self.config.thermostats.forEach(function(dev) {
+					var vDevX = self.controller.devices.get(dev.device);
+					if (vDevX && vDevX.get("metrics:level") !== 30) {
+						vDevX.performCommand("exact", {level : 30});
+					}
+				});
+			} else {
+					self.debug_log("Sensor's temperature changed, but it is in normal range. Nothing to do.");
+			}
 		} else {
-				self.debug_log("Sensor's temperature changed, but it is in normal range. Nothing to do.");
+			self.debug_log("Weather temperature is more than 5 degree. Not allowed to control slave thermostats. Nothing to do");
 		}
 	};
 
@@ -117,6 +123,7 @@ CombinedRoomThermostat.prototype.init = function (config) {
 
 			var daylightSensor = self.controller.devices.get(self.config.daylightSensor),
 			temperatureSensor = self.controller.devices.get(self.config.temperatureSensor),
+			weatherSensor = self.controller.devices.get(self.config.weatherSensor),
 			presenceSwitch = self.controller.devices.get(self.config.presenceSwitch),
 			airConditionerSwitch = self.controller.devices.get(self.config.airConditionerSwitch),
 			airConditionerThermostat = self.controller.devices.get(self.config.airConditionerThermostat),
@@ -124,59 +131,63 @@ CombinedRoomThermostat.prototype.init = function (config) {
 
 			var daylightSensorValue = daylightSensor.get("metrics:level"),
 			temperatureSensorValue = temperatureSensor.get("metrics:level"),
+			weatherSensorValue = weatherSensor.get("metrics:level"),
 			presenceSwitchValue = presenceSwitch.get("metrics:level"),
 			airConditionerSwitchValue = airConditionerSwitch.get("metrics:level"),
 			airConditionerThermostatValue = airConditionerThermostat.get("metrics:level"),
 			curtainValue = curtain.get("metrics:level");
 
-
-			if (daylightSensorValue === "on") {
-				self.debug_log("Daylight state is ON. Performing temperature check...");
-				if (temperatureSensorValue > self.config.airConditionerDegreeCondition) {
-					self.debug_log("Temperature is too high (current value is:"+ temperatureSensorValue + "). Performing curtain and air conditoner...");
-					if (curtainValue !== self.config.curtainLevelCondition) {
-						curtain.performCommand("exact", {level : self.config.curtainLevelCondition});
-						self.debug_log("Curtain level is set to " + self.config.curtainLevelCondition);
-					} else {
-						self.debug_log("Curtain is already at level " + self.config.curtainLevelCondition);
-					}
-
-					if (presenceSwitchValue === "on") {
-						if (airConditionerSwitchValue === "off") {
-							airConditionerSwitch.performCommand("on");
-							
-							setTimeout(function() {
-								if (airConditionerThermostatValue !== self.config.airConditionerDegreeValue) {
-									airConditionerThermostat.performCommand("exact", {level : self.config.airConditionerDegreeValue});
-									self.debug_log("Air conditioners thermostat value is set to " + self.config.airConditionerDegreeValue);
-								} else {
-									self.debug_log("Air conditioners thermostat value is already at " + self.config.airConditionerDegreeValue);
-								}
-							}, 3 * 1000)
-							
-
-							self.debug_log("Air conditioner is enabled for " + self.config.airConditionerTimeCondition + "hour(s)");
-							
-							setTimeout(function () {
-								if (airConditionerSwitch.get("metrics:level") === "on") {
-									airConditionerSwitch.performCommand("off");
-									self.debug_log("Timer is ended. Air conditioner is disabled");
-								} else {
-									self.debug_log("Timer is ended, but air conditioner is already disabled");
-								}
-							}, self.config.airConditionerTimeCondition * 60 * 60 * 1000);
-
+			if (weatherSensorValue > 5) {
+				if (daylightSensorValue === "on") {
+					self.debug_log("Daylight state is ON. Performing temperature check...");
+					if (temperatureSensorValue > self.config.airConditionerDegreeCondition) {
+						self.debug_log("Temperature is too high (current value is:"+ temperatureSensorValue + "). Performing curtain and air conditoner...");
+						if (curtainValue !== self.config.curtainLevelCondition) {
+							curtain.performCommand("exact", {level : self.config.curtainLevelCondition});
+							self.debug_log("Curtain level is set to " + self.config.curtainLevelCondition);
 						} else {
-							self.debug_log("Air conditioner is already enabled");
+							self.debug_log("Curtain is already at level " + self.config.curtainLevelCondition);
+						}
+	
+						if (presenceSwitchValue === "on") {
+							if (airConditionerSwitchValue === "off") {
+								airConditionerSwitch.performCommand("on");
+								
+								setTimeout(function() {
+									if (airConditionerThermostatValue !== self.config.airConditionerDegreeValue) {
+										airConditionerThermostat.performCommand("exact", {level : self.config.airConditionerDegreeValue});
+										self.debug_log("Air conditioners thermostat value is set to " + self.config.airConditionerDegreeValue);
+									} else {
+										self.debug_log("Air conditioners thermostat value is already at " + self.config.airConditionerDegreeValue);
+									}
+								}, 3 * 1000)
+								
+	
+								self.debug_log("Air conditioner is enabled for " + self.config.airConditionerTimeCondition + "hour(s)");
+								
+								setTimeout(function () {
+									if (airConditionerSwitch.get("metrics:level") === "on") {
+										airConditionerSwitch.performCommand("off");
+										self.debug_log("Timer is ended. Air conditioner is disabled");
+									} else {
+										self.debug_log("Timer is ended, but air conditioner is already disabled");
+									}
+								}, self.config.airConditionerTimeCondition * 60 * 60 * 1000);
+	
+							} else {
+								self.debug_log("Air conditioner is already enabled");
+							}
+						} else {
+							self.debug_log("Nobody is at home. Not allowed to turn on air conditioner. Nothing to do");
 						}
 					} else {
-						self.debug_log("Nobody is at home. Not allowed to turn on air conditioner. Nothing to do");
+						self.debug_log("Temperature is normal (current value is:"+ temperatureSensorValue + "). Nothing to do");
 					}
 				} else {
-					self.debug_log("Temperature is normal (current value is:"+ temperatureSensorValue + "). Nothing to do");
+					self.debug_log("Daylight state is OFF. Nothing to do");
 				}
 			} else {
-				self.debug_log("Daylight state is OFF. Nothing to do");
+				self.debug_log("Weather temperature is less than 5 degree. Not allowed to control air conditioner and curtain. Nothing to do");
 			}
 		};
 

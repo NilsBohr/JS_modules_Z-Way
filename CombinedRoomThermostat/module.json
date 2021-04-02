@@ -36,6 +36,12 @@
 				"enum": "namespaces:devices_sensorMultilevel:deviceId",
 				"required": true
 			},
+			"weatherSensor": {
+				"field": "enum",
+				"datasource": "namespaces",
+				"enum": "namespaces:devices_sensorMultiline:deviceId",
+				"required": true
+			},
 			"delta": {
 				"minimum": 1,
 				"maximum": 10,
@@ -151,6 +157,13 @@
 				"datasource": "namespaces",
 				"field": "optionLabels",
 				"optionLabels": "namespaces:devices_sensorMultilevel:deviceName"
+			},
+			"weatherSensor": {
+				"label": "__l_w_sensor__",
+				"type": "select",
+				"datasource": "namespaces",
+				"field": "optionLabels",
+				"optionLabels": "namespaces:devices_sensorMultiline:deviceName"
 			},
 			"delta": {
 				"label": "__l_delta__",

@@ -1,0 +1,70 @@
+{
+	"singleton": false,
+	"category": "developers_stuff",
+	"icon": "icon.png",
+	"moduleName":"TestDevice",
+	"version": "1.0.0",
+	"maturity": "stable",
+	"defaults": {
+		"title": "__m_title__",
+		"description": "__m_descr__"
+	},
+	"schema": {
+		"type": "object",
+		"properties": {
+			"deviceType": {
+				"type": "string",
+				"enum": ["sensorMultilevel", "thermostat"],
+				"default": "",
+				"required": true
+			},
+			"minlevel" : {
+				"type": "number",
+				"minimum": "1",
+				"maximum": "29",
+				"dependencies": "deviceType",
+				"required": true
+			},
+			"maxlevel" : {
+				"type": "number",
+				"minimum": "2",
+				"maximum": "30",
+				"dependencies": "deviceType",
+				"required": true
+			},
+			"updatetime" : {
+				"type": "number",
+				"dependencies": "deviceType",
+				"required": true
+			},
+			"debug" : {
+				"type": "boolean"
+			}
+		},
+		"required": false
+	},
+	"options": {
+		"fields": {
+			"deviceType": {
+				"type": "select",
+				"label": "__l_device_type__"
+			},
+			"minlevel" : {
+				"label": "__l_minl_sm__",
+				"dependencies": {"deviceType": "sensorMultilevel"}
+			},
+			"maxlevel" : {
+				"label": "__l_maxl_sm__",
+				"dependencies": {"deviceType": "sensorMultilevel"}
+			},
+			"updatetime" : {
+				"label": "__l_ut_sm__",
+				"dependencies": {"deviceType": "sensorMultilevel"}
+			},
+			"debug" : {
+				"type": "checkbox",
+				"label": "__l_debug__"
+			}
+		}
+	}
+}
