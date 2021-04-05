@@ -55,7 +55,7 @@ CombinedRoomThermostat.prototype.init = function (config) {
 		
 		if (weatherSensorValue < 5) {
 			if ((temperatureSensorValue > (mainThermostatValue + delta)) && (global.climatState != "cooling")) {
-				self.debug_log("Sensor's temperature changed and is too hot. Setting thermostats temperature to 10 degree.");
+				self.debug_log("Sensor's temperature changed and is too hot (current temperature value is " + temperatureSensorValue + ", termostat value is " + mainThermostatValue + "). Setting thermostats temperature to 10 degree.");
 				global.climatState = "cooling";
 				self.config.thermostats.forEach(function(dev) {
 					var vDevX = self.controller.devices.get(dev.device);
@@ -64,7 +64,7 @@ CombinedRoomThermostat.prototype.init = function (config) {
 					}
 				});
 			} else if ((temperatureSensorValue < (mainThermostatValue - delta)) && (global.climatState != "heating")) {
-				self.debug_log("Sensor's temperature changed and is too cold. Setting thermostats temperature to 30 degree.");
+				self.debug_log("Sensor's temperature changed and is too cold (current temperature value is " + temperatureSensorValue + ", termostat value is " + mainThermostatValue + "). Setting thermostats temperature to 30 degree.");
 				global.climatState = "heating";
 				self.config.thermostats.forEach(function(dev) {
 					var vDevX = self.controller.devices.get(dev.device);
