@@ -84,7 +84,7 @@ ThermostatShoeDryer.prototype.init = function (config) {
 						self.debug_log("Rain condition is FALSE");
 					}
 				} else {
-					self.debug_log("Common condition is already TRUE. Waiting for " + configStartTime[0] + ":" + configStartTime[1] + " to perform devices actions");
+					self.debug_log("Common condition is already TRUE. Waiting for start time to perform devices actions");
 				}
 			} else {
 				self.debug_log("Time condition is FALSE");
