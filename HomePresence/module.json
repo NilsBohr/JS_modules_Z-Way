@@ -1,0 +1,129 @@
+{
+    "moduleName": "HomePresence",
+    "category": "automation_basic",
+    "dependencies":  ["Cron" , "BaseModule"],
+    "icon": "icon.png",
+    "maturity": "beta",
+    "version": "1.0",
+    "singleton": true,
+    "defaults": {
+        "description": "__m_descr__",
+        "title": "__m_title__"
+    },
+    "options": {
+        "fields": {
+            "show_advanced_config": {
+                "rightLabel": "__show_advanced_config_label__"
+            },
+            "advanced_config": {
+                "dependencies": {
+                    "show_advanced_config": true
+                },
+                "label": "__advanced_config_label__",
+                "fields": {
+                    "interval": {
+                        "type": "integer",
+                        "helper": "__interval_helper__",
+                        "label": "__interval_label__"
+                    },
+                    "netcat_port": {
+                        "type": "integer",
+                        "helper": "__netcat_port_helper__",
+                        "label": "__netcat_port_label__"
+                    },
+                    "debug_logging": {
+                        "helper": "__debug_logging_helper__",
+                        "label": "__debug_logging_label__"
+                    }
+                }
+            },
+            "network_addresses": {
+                "label": "__network_addresses_label__",
+                "fields": {
+                    "item": {
+                        "fields": {
+                            "addr": {
+                                "helper": "__addr_helper__",
+                                "label": "__addr_label__"
+                            }
+                        }
+                    }
+                }
+            },
+            "motion_sensors": {
+                "label": "__motion_sensors_label__",
+                "fields": {
+                    "item": {
+                        "fields": {
+                            "motion_sensor": {
+                                "type": "select",
+                                "datasource": "namespaces",
+                                "field": "optionLabels",
+                                "optionLabels": "namespaces:devices_sensorBinary:deviceName"     
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "schema": {
+        "type": "object",
+        "properties": {
+            "show_advanced_config": {
+                "type": "boolean"
+            },
+            "advanced_config": {
+                "type": "object",
+                "properties": {
+                    "interval": {
+                        "type": "number",
+                        "required": false,
+                        "default": 1
+                    },
+                    "netcat_port": {
+                        "type": "number",
+                        "required": false,
+                        "default": 80
+                    },
+                    "debug_logging": {
+                        "type": "boolean",
+                        "default": false
+                    }
+                },
+                "dependencies": {
+                    "hysteresis_size": "hysteresis"
+                }
+            },
+            "network_addresses" : {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "addr": {
+                            "type": "string",
+                            "required": true
+                        }
+                    }
+                }
+            },
+            "motion_sensors": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "motion_sensor": {
+                            "field": "enum",
+                            "datasource": "namespaces",
+                            "enum": "namespaces:devices_sensorBinary:deviceId" 
+                            }
+                        }
+                    
+                }
+            }
+        },
+        "dependencies": {
+            "advanced_config": "show_advanced_config"
+        }
+    }
+}
