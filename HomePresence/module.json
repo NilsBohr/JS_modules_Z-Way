@@ -31,7 +31,12 @@
                         "helper": "__netcat_port_helper__",
                         "label": "__netcat_port_label__"
                     },
+                    "motion_timeout" : {
+                        "helper": "__motion_timeout_helper__",
+                        "label": "__motion_timeout_label__"
+                    },
                     "debug_logging": {
+                        "type": "checkbox",
                         "helper": "__debug_logging_helper__",
                         "label": "__debug_logging_label__"
                     }
@@ -85,6 +90,11 @@
                         "type": "number",
                         "required": false,
                         "default": 80
+                    },
+                    "motion_timeout" : {
+                        "type": "number",
+                        "required": false,
+                        "default": 1
                     },
                     "debug_logging": {
                         "type": "boolean",
