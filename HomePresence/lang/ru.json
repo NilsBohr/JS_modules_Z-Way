@@ -16,6 +16,6 @@
     "motion_timeout_label": "Задержка",
     "motion_timeout_helper": "После какого времени определять отсутствие по движению (в часах). По умолчанию 1",
     "addr_label": "Адрес",
-    "addr_helper": "IP-адрес или имя узла для ping."
+    "addr_helper": "IP-адрес или имя узла для netcat."
 }
 
