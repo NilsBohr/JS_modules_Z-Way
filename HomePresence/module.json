@@ -12,35 +12,24 @@
     },
     "options": {
         "fields": {
-            "show_advanced_config": {
-                "rightLabel": "__show_advanced_config_label__"
+            "interval": {
+                "type": "integer",
+                "helper": "__interval_helper__",
+                "label": "__interval_label__"
             },
-            "advanced_config": {
-                "dependencies": {
-                    "show_advanced_config": true
-                },
-                "label": "__advanced_config_label__",
-                "fields": {
-                    "interval": {
-                        "type": "integer",
-                        "helper": "__interval_helper__",
-                        "label": "__interval_label__"
-                    },
-                    "netcat_port": {
-                        "type": "integer",
-                        "helper": "__netcat_port_helper__",
-                        "label": "__netcat_port_label__"
-                    },
-                    "motion_timeout" : {
-                        "helper": "__motion_timeout_helper__",
-                        "label": "__motion_timeout_label__"
-                    },
-                    "debug_logging": {
-                        "type": "checkbox",
-                        "helper": "__debug_logging_helper__",
-                        "label": "__debug_logging_label__"
-                    }
-                }
+            "netcat_port": {
+                "type": "integer",
+                "helper": "__netcat_port_helper__",
+                "label": "__netcat_port_label__"
+            },
+            "motion_timeout" : {
+                "type": "integer",
+                "helper": "__motion_timeout_helper__",
+                "label": "__motion_timeout_label__"
+            },
+            "debug_logging": {
+                "type": "checkbox",
+                "rightLabel": "__debug_logging_label__"
             },
             "network_addresses": {
                 "label": "__network_addresses_label__",
@@ -74,36 +63,25 @@
     },
     "schema": {
         "type": "object",
-        "properties": {
-            "show_advanced_config": {
-                "type": "boolean"
+        "properties": {           
+            "interval": {
+                "type": "number",
+                "required": false,
+                "default": 1
             },
-            "advanced_config": {
-                "type": "object",
-                "properties": {
-                    "interval": {
-                        "type": "number",
-                        "required": false,
-                        "default": 1
-                    },
-                    "netcat_port": {
-                        "type": "number",
-                        "required": false,
-                        "default": 80
-                    },
-                    "motion_timeout" : {
-                        "type": "number",
-                        "required": false,
-                        "default": 1
-                    },
-                    "debug_logging": {
-                        "type": "boolean",
-                        "default": false
-                    }
-                },
-                "dependencies": {
-                    "hysteresis_size": "hysteresis"
-                }
+            "netcat_port": {
+                "type": "number",
+                "required": false,
+                "default": 80
+            },
+            "motion_timeout" : {
+                "type": "number",
+                "required": false,
+                "default": 1
+            },
+            "debug_logging": {
+                "type": "boolean",
+                "default": false
             },
             "network_addresses" : {
                 "type": "array",
