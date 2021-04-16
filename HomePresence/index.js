@@ -73,6 +73,7 @@ HomePresence.prototype.init = function (config){
             if (self.isAddrAlive) {
                 if (self.isTimerStarted) {
                     clearTimeout(self.motionTimeout);
+                    self.isTimerStarted = false;
                 }
 
                 if (self.vDevPresence.get('metrics:level') === 'off') {
@@ -124,6 +125,7 @@ HomePresence.prototype.init = function (config){
         if (self.isMotionPresent) {
             if (self.motionTimeout) {
                 clearTimeout(self.motionTimeout);
+                self.isTimerStarted = false;
             }
 
             if (self.vDevPresence.get('metrics:level') === 'off') {
@@ -140,11 +142,13 @@ HomePresence.prototype.init = function (config){
                     self.debug_log("Timer is started for " + self.config.motion_timeout + " hour(s)");
                     self.isTimerStarted = true;
                     self.motionTimeout = setTimeout(function () {
-                        if (self.vDevPresence.get('metrics:level') === 'on') {
-                            self.vDevPresence.set('metrics:level', 'off');
-                            self.debug_log('Timer is ended. Presence switch changed state to OFF');
-                        } else {
-                            self.debug_log('Timer is ended, but presence switch is already OFF');
+                        if (!self.isAddrAlive) {
+                            if (self.vDevPresence.get('metrics:level') === 'on') {
+                                self.vDevPresence.set('metrics:level', 'off');
+                                self.debug_log('Timer is ended. Presence switch changed state to OFF');
+                            } else {
+                                self.debug_log('Timer is ended, but presence switch is already OFF');
+                            }
                         }
                         self.isTimerStarted = false;
                         }, self.config.motion_timeout * 60 * 60 * 1000);
@@ -175,6 +179,7 @@ HomePresence.prototype.stop = function (){
 
     if (this.isTimerStarted) {
         clearTimeout(this.motionTimeout);
+        self.isTimerStarted = false;
     }
 
     this.controller.devices.remove(this.vDevPresence);
