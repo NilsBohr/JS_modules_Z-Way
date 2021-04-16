@@ -71,8 +71,8 @@ HomePresence.prototype.init = function (config){
             });
 
             if (self.isAddrAlive) {
-                if (this.motionTimeout) {
-                    clearTimeout(this.motionTimeout);
+                if (self.isTimerStarted) {
+                    clearTimeout(self.motionTimeout);
                 }
 
                 if (self.vDevPresence.get('metrics:level') === 'off') {
@@ -80,15 +80,6 @@ HomePresence.prototype.init = function (config){
                     self.debug_log('Presence switch changed state to ON');
                 } else {
                     self.debug_log('Presence switch is already ON');
-                }
-            }
-                
-            if (!self.isAddrAlive && !self.isMotionPresent) {
-                if (self.vDevPresence.get('metrics:level') === 'on') {
-                    self.vDevPresence.set('metrics:level', 'off');
-                    self.debug_log('Presence switch changed state to OFF');
-                } else {
-                    self.debug_log('Presence switch is already OFF');
                 }
             }
         }
@@ -117,13 +108,8 @@ HomePresence.prototype.init = function (config){
 
     this.poll_addr();
 
-    if (this.motionTimeout) {
-        clearTimeout(this.motionTimeout);
-    }
-
     this.checkMotion = function () {
-        self.isMotionPresent = true;
-
+        self.isMotionPresent = false;
         self.config.motion_sensors.forEach(function(dev) {
             var motionSensor = self.controller.devices.get(dev.motion_sensor);
 
@@ -136,8 +122,8 @@ HomePresence.prototype.init = function (config){
         });
 
         if (self.isMotionPresent) {
-            if (this.motionTimeout) {
-                clearTimeout(this.motionTimeout);
+            if (self.motionTimeout) {
+                clearTimeout(self.motionTimeout);
             }
 
             if (self.vDevPresence.get('metrics:level') === 'off') {
@@ -147,19 +133,29 @@ HomePresence.prototype.init = function (config){
                 self.debug_log('Presence switch is already ON');
             }
         }
-            
-        if (!self.isMotionPresent && !self.isAddrAlive) {
-            if (!self.motionTimeout) {
-                self.motionTimeout = setTimeout(function () {
-                    if (self.vDevPresence.get('metrics:level') === 'on') {
-                        self.vDevPresence.set('metrics:level', 'off');
-                        self.debug_log('Presence switch changed state to OFF');
-                    } else {
-                        self.debug_log('Presence switch is already OFF');
-                    }
-                }, self.config.motion_timeout * 60 * 60 * 1000);
-            }
-        } 
+        
+        if (!self.isTimerStarted) {
+            if (!self.isMotionPresent && !self.isAddrAlive) {
+                if (self.vDevPresence.get('metrics:level') !== 'off') {
+                    self.debug_log("Timer is started for " + self.config.motion_timeout + " hour(s)");
+                    self.isTimerStarted = true;
+                    self.motionTimeout = setTimeout(function () {
+                        if (self.vDevPresence.get('metrics:level') === 'on') {
+                            self.vDevPresence.set('metrics:level', 'off');
+                            self.debug_log('Timer is ended. Presence switch changed state to OFF');
+                        } else {
+                            self.debug_log('Timer is ended, but presence switch is already OFF');
+                        }
+                        self.isTimerStarted = false;
+                        }, self.config.motion_timeout * 60 * 60 * 1000);
+    
+                } else {
+                    self.debug_log('Presence switch is already OFF. No need to start timer.');
+                }
+            } 
+        } else {
+            self.debug_log('Timer is already in progress.');
+        }
     }
 
     this.config.motion_sensors.forEach(function(dev) {
@@ -177,13 +173,13 @@ HomePresence.prototype.stop = function (){
     
     var self = this;
 
+    if (this.isTimerStarted) {
+        clearTimeout(this.motionTimeout);
+    }
+
     this.controller.devices.remove(this.vDevPresence);
     this.controller.emit('cron.removeTask', this.crontask_name);
     this.controller.off(this.crontask_name, this.poll_addr);
-
-    if (this.motionTimeout) {
-        clearTimeout(this.motionTimeout);
-    }
 
     this.config.motion_sensors.forEach(function(dev) {
         self.controller.devices.off(dev.motion_sensor, 'change:metrics:level', self.checkMotion);

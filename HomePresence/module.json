@@ -23,7 +23,6 @@
                 "label": "__netcat_port_label__"
             },
             "motion_timeout" : {
-                "type": "integer",
                 "helper": "__motion_timeout_helper__",
                 "label": "__motion_timeout_label__"
             },
