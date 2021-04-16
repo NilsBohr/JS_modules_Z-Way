@@ -75,10 +75,10 @@
 			"useAirConditionerAndCurtain": {
 				"type": "checkbox"
 			},
-			"presenceSensor": {
+			"presenceSwitch": {
 				"field": "enum",
 				"datasource": "namespaces",
-				"enum": "namespaces:devices_sensorBinary:deviceId",
+				"enum": "namespaces:devices_switchBinary:deviceId",
 				"dependencies": "useAirConditionerAndCurtain",
 				"required": true
 			},
@@ -210,8 +210,8 @@
 				"type": "checkbox",
 				"rightLabel": "__rl_ac_curtain__"
 			},
-			"presenceSensor": {
-				"label": "__l_p_sensor__",
+			"presenceSwitch": {
+				"label": "__l_p_switch__",
 				"type": "select",
 				"dependencies": {
 					"useAirConditionerAndCurtain": true
