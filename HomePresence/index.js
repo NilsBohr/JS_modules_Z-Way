@@ -58,7 +58,6 @@ HomePresence.prototype.init = function (config){
             self.isAddrAlive = false;
             self.config.network_addresses.forEach(function (item) {
                 var addr = item.addr;
-
                 var p = self.config.netcat_port;
                 var response = system('netcat -v -z -w ' + '10' + ' ' + addr + ' ' + p + ' 2>&1');
 
@@ -82,6 +81,10 @@ HomePresence.prototype.init = function (config){
                 } else {
                     self.debug_log('Presence switch is already ON');
                 }
+            }
+
+            if (!self.isAddrAlive && !self.isMotionPresent) {
+                self.checkMotion();
             }
         }
         catch(err){
@@ -142,7 +145,7 @@ HomePresence.prototype.init = function (config){
                     self.debug_log("Timer is started for " + self.config.motion_timeout + " hour(s)");
                     self.isTimerStarted = true;
                     self.motionTimeout = setTimeout(function () {
-                        if (!self.isAddrAlive) {
+                        if (!self.isMotionPresent && !self.isAddrAlive) {
                             if (self.vDevPresence.get('metrics:level') === 'on') {
                                 self.vDevPresence.set('metrics:level', 'off');
                                 self.debug_log('Timer is ended. Presence switch changed state to OFF');
