@@ -68,7 +68,7 @@ CustomFloorHeating.prototype.init = function (config) {
 
 				if (!self.intervalTimer) {
 					self.intervalTimer = setInterval(function() {
-						vDevSwitch.performCommand("update");
+						vDevThermostat.performCommand("update");
 					}, 60 * 1000)
 				}
 			}
