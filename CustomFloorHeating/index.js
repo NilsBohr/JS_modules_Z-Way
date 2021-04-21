@@ -20,6 +20,10 @@ CustomFloorHeating.prototype.init = function (config) {
 
 	var self = this;
 
+	if (this.intervalTimer) {
+		clearInterval(this.intervalTimer);
+	}
+
 	this.runScene = function() {
 		var vDevSwitch = self.controller.devices.get(self.config.switch),
 		vDevSensor = self.controller.devices.get(self.config.sensor),
@@ -61,6 +65,12 @@ CustomFloorHeating.prototype.init = function (config) {
 						self.debug_log("Thermostat value was: " + vDevThermostatValue + ". Thermostat value set to: "+  thermostatConditionDegree);
 					}
 				}
+
+				if (!self.intervalTimer) {
+					self.intervalTimer = setInterval(function() {
+						vDevSwitch.performCommand("update");
+					}, 60 * 1000)
+				}
 			}
 		}
 	};
@@ -79,6 +89,8 @@ CustomFloorHeating.prototype.init = function (config) {
 		else {
 			self.debug_log("Switch is already OFF (current time is: " + date.getHours() + ":" + date.getMinutes()+ ")");
 		}
+
+		clearInterval(self.intervalTimer);
 	};
 
 	
@@ -117,6 +129,10 @@ CustomFloorHeating.prototype.stop = function () {
 	CustomFloorHeating.super_.prototype.stop.call(this);
 	
 	var self = this;
+
+	if (this.intervalTimer) {
+		clearInterval(this.intervalTimer);
+	}
 
 	this.controller.devices.off(this.config.sensor, 'change:metrics:level', this.runScene);
 
