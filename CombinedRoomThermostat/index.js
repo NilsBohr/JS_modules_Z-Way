@@ -55,8 +55,8 @@ CombinedRoomThermostat.prototype.init = function (config) {
 		mainThermostatValue = mainThermostat.get("metrics:level"),
 		delta = self.config.delta;
 		
-		if (presenceSwitchValue === "on") {
-			if (weatherSensorValue < 5) {
+		if (weatherSensorValue < 5) {
+			if (presenceSwitchValue === "on") {
 				if ((temperatureSensorValue > (mainThermostatValue + delta)) && (global.climatState != "cooling")) {
 					self.debug_log("Sensor's temperature changed and is too hot (current temperature value is " + temperatureSensorValue + ", termostat value is " + mainThermostatValue + "). Setting thermostats temperature to 10 degree");
 					global.climatState = "cooling";
@@ -78,9 +78,6 @@ CombinedRoomThermostat.prototype.init = function (config) {
 				} else {
 						self.debug_log("Sensor's temperature changed, but it is in normal range. Nothing to do.");
 				}
-			} else {
-				self.debug_log("Weather temperature is more than 5 degree. Not allowed to control slave thermostats. Nothing to do");
-			}
 		} else {
 			if (global.climatState != "cooling") {
 				self.debug_log("Nobody is at home. Setting thermostats temperature to 10 degree");
@@ -94,6 +91,10 @@ CombinedRoomThermostat.prototype.init = function (config) {
 			} else {
 				self.debug_log("Nobody is at home, but thermostats is already at minimum value");
 			}
+		}
+		
+		} else {
+				self.debug_log("Weather temperature is more than 5 degree. Not allowed to control slave thermostats. Nothing to do");
 		}
 		
 	};
