@@ -76,25 +76,25 @@ CombinedRoomThermostat.prototype.init = function (config) {
 						}
 					});
 				} else {
-						self.debug_log("Sensor's temperature changed, but it is in normal range. Nothing to do.");
+					self.debug_log("Sensor's temperature changed, but it is in normal range. Nothing to do.");
 				}
-		} else {
-			if (global.climatState != "cooling") {
-				self.debug_log("Nobody is at home. Setting thermostats temperature to 10 degree");
-				global.climatState = "cooling";
-				self.config.thermostats.forEach(function(dev) {
-					var vDevX = self.controller.devices.get(dev.device);
-					if (vDevX && vDevX.get("metrics:level") !== 10) {
-						vDevX.performCommand("exact", {level : 10});
-					}
-				});
 			} else {
-				self.debug_log("Nobody is at home, but thermostats is already at minimum value");
+				if (global.climatState != "cooling") {
+					self.debug_log("Nobody is at home. Setting thermostats temperature to 10 degree");
+					global.climatState = "cooling";
+					self.config.thermostats.forEach(function(dev) {
+						var vDevX = self.controller.devices.get(dev.device);
+						if (vDevX && vDevX.get("metrics:level") !== 10) {
+							vDevX.performCommand("exact", {level : 10});
+						}
+					});
+				} else {
+					self.debug_log("Nobody is at home, but thermostats is already at minimum value");
+				}
 			}
-		}
 		
 		} else {
-				self.debug_log("Weather temperature is more than 5 degree. Not allowed to control slave thermostats. Nothing to do");
+			self.debug_log("Weather temperature is more than 5 degree. Not allowed to control slave thermostats. Nothing to do");
 		}
 		
 	};
