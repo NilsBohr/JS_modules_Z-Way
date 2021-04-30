@@ -46,16 +46,16 @@ CombinedRoomThermostat.prototype.init = function (config) {
 	this.checkThermostatsTemp = function () {
 		var temperatureSensor = self.controller.devices.get(self.config.temperatureSensor),
 		weatherSensor = self.controller.devices.get(self.config.weatherSensor),
-		presenceSensor = self.controller.devices.get(self.config.presenceSensor),
+		presenceSwitch = self.controller.devices.get(self.config.presenceSwitch),
 		mainThermostat = self.vDev;
 	
 		var temperatureSensorValue = temperatureSensor.get("metrics:level"),
 		weatherSensorValue = weatherSensor.get("metrics:level"),
-		presenceSensorValue = presenceSensor.get("metrics:level"),
+		presenceSwitchValue = presenceSwitch.get("metrics:level"),
 		mainThermostatValue = mainThermostat.get("metrics:level"),
 		delta = self.config.delta;
 		
-		if (presenceSensorValue === "on") {
+		if (presenceSwitchValue === "on") {
 			if (weatherSensorValue < 5) {
 				if ((temperatureSensorValue > (mainThermostatValue + delta)) && (global.climatState != "cooling")) {
 					self.debug_log("Sensor's temperature changed and is too hot (current temperature value is " + temperatureSensorValue + ", termostat value is " + mainThermostatValue + "). Setting thermostats temperature to 10 degree");
@@ -99,7 +99,7 @@ CombinedRoomThermostat.prototype.init = function (config) {
 	};
 
 	this.controller.devices.on(this.config.temperatureSensor, 'change:metrics:level', self.checkThermostatsTemp);
-	this.controller.devices.on(this.config.presenceSensor, 'change:metrics:level', self.checkThermostatsTemp);
+	this.controller.devices.on(this.config.presenceSwitch, 'change:metrics:level', self.checkThermostatsTemp);
 	
 
 	// handling time conditions if exist
@@ -144,14 +144,14 @@ CombinedRoomThermostat.prototype.init = function (config) {
 			var daylightSensor = self.controller.devices.get(self.config.daylightSensor),
 			temperatureSensor = self.controller.devices.get(self.config.temperatureSensor),
 			weatherSensor = self.controller.devices.get(self.config.weatherSensor),
-			presenceSensor = self.controller.devices.get(self.config.presenceSensor),
+			presenceSwitch = self.controller.devices.get(self.config.presenceSwitch),
 			airConditionerSwitch = self.controller.devices.get(self.config.airConditionerSwitch),
 			airConditionerThermostat = self.controller.devices.get(self.config.airConditionerThermostat);
 	
 			var daylightSensorValue = daylightSensor.get("metrics:level"),
 			temperatureSensorValue = temperatureSensor.get("metrics:level"),
 			weatherSensorValue = weatherSensor.get("metrics:level"),
-			presenceSensorValue = presenceSensor.get("metrics:level"),
+			presenceSwitchValue = presenceSwitch.get("metrics:level"),
 			airConditionerSwitchValue = airConditionerSwitch.get("metrics:level"),
 			airConditionerThermostatValue = airConditionerThermostat.get("metrics:level");
 	
@@ -159,7 +159,7 @@ CombinedRoomThermostat.prototype.init = function (config) {
 				if (daylightSensorValue === "on") {
 					self.debug_log("Daylight state is ON. Performing temperature check...");
 					if (temperatureSensorValue > self.config.airConditionerDegreeCondition) {
-						if (presenceSensorValue === "on") {
+						if (presenceSwitchValue === "on") {
 							self.debug_log("Temperature is too high (current value is:"+ temperatureSensorValue + "). Performing air conditioner...")
 							if (airConditionerSwitchValue === "off") {	
 								airConditionerSwitch.performCommand("on");
@@ -208,20 +208,20 @@ CombinedRoomThermostat.prototype.init = function (config) {
 			var daylightSensor = self.controller.devices.get(self.config.daylightSensor),
 			temperatureSensor = self.controller.devices.get(self.config.temperatureSensor),
 			weatherSensor = self.controller.devices.get(self.config.weatherSensor),
-			presenceSensor = self.controller.devices.get(self.config.presenceSensor),
+			presenceSwitch = self.controller.devices.get(self.config.presenceSwitch),
 			curtain = self.controller.devices.get(self.config.curtain);
 	
 			var daylightSensorValue = daylightSensor.get("metrics:level"),
 			temperatureSensorValue = temperatureSensor.get("metrics:level"),
 			weatherSensorValue = weatherSensor.get("metrics:level"),
-			presenceSensorValue = presenceSensor.get("metrics:level"),
+			presenceSwitchValue = presenceSwitch.get("metrics:level"),
 			curtainValue = curtain.get("metrics:level");
 	
 	
 			if (weatherSensorValue > 5) {
 				if (daylightSensorValue === "on") {
 					if (temperatureSensorValue > self.config.curtainDegreeCondition) {
-						if (presenceSensorValue === "off") {
+						if (presenceSwitchValue === "off") {
 							self.debug_log("Nobody is at home, but temperature is too high (current value is:"+ temperatureSensorValue + "). Performing curtain...");
 							if (curtainValue !== self.config.curtainLevel) {
 								curtain.performCommand("exact", {level : self.config.curtainLevel});
@@ -233,7 +233,7 @@ CombinedRoomThermostat.prototype.init = function (config) {
 					}
 				}
 			}
-		}
+		};
 	
 		this.controller.devices.on(this.config.daylightSensor, 'change:metrics:level', this.performCurtain);
 		this.controller.devices.on(this.config.temperatureSensor, 'change:metrics:level', this.performCurtain);
