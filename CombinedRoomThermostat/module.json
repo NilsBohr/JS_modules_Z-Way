@@ -36,15 +36,27 @@
 				"enum": "namespaces:devices_sensorMultilevel:deviceId",
 				"required": true
 			},
+			"delta": {
+				"minimum": 1,
+				"maximum": 10,
+				"required": true
+			},
 			"weatherSensor": {
 				"field": "enum",
 				"datasource": "namespaces",
 				"enum": "namespaces:devices_sensorMultiline:deviceId",
 				"required": true
 			},
-			"delta": {
-				"minimum": 1,
-				"maximum": 10,
+			"daylightSensor": {
+				"field": "enum",
+				"datasource": "namespaces",
+				"enum": "namespaces:devices_sensorBinary:deviceId",
+				"required": true
+			},
+			"presenceSwitch": {
+				"field": "enum",
+				"datasource": "namespaces",
+				"enum": "namespaces:devices_switchBinary:deviceId",
 				"required": true
 			},
 			"useTime": {
@@ -72,59 +84,52 @@
 				"maximum": 30,
 				"dependencies": "useTime"
 			},
-			"useAirConditionerAndCurtain": {
+			"useAirConditioner": {
 				"type": "checkbox"
-			},
-			"presenceSwitch": {
-				"field": "enum",
-				"datasource": "namespaces",
-				"enum": "namespaces:devices_switchBinary:deviceId",
-				"dependencies": "useAirConditionerAndCurtain",
-				"required": true
-			},
-			"daylightSensor": {
-				"field": "enum",
-				"datasource": "namespaces",
-				"enum": "namespaces:devices_sensorBinary:deviceId",
-				"dependencies": "useAirConditionerAndCurtain",
-				"required": true
 			},
 			"airConditionerSwitch": {
 				"field": "enum",
 				"datasource": "namespaces",
 				"enum": "namespaces:devices_switchBinary:deviceId",
-				"dependencies": "useAirConditionerAndCurtain",
+				"dependencies": "useAirConditioner",
 				"required": true
 			},
 			"airConditionerThermostat": {
 				"field": "enum",
 				"datasource": "namespaces",
 				"enum": "namespaces:devices_thermostat:deviceId",
-				"dependencies": "useAirConditionerAndCurtain",
+				"dependencies": "useAirConditioner",
 				"required": true
 			},
 			"airConditionerDegreeValue": {
 				"type": "number",
-				"dependencies": "useAirConditionerAndCurtain"
+				"dependencies": "useAirConditioner"
 			},
 			"airConditionerDegreeCondition": {
 				"type": "number",
-				"dependencies": "useAirConditionerAndCurtain"
+				"dependencies": "useAirConditioner"
 			},
 			"airConditionerTimeCondition": {
 				"type": "number",
-				"dependencies": "useAirConditionerAndCurtain"
+				"dependencies": "useAirConditioner"
+			},
+			"useCurtain": {
+				"type": "checkbox"
 			},
 			"curtain": {
 				"field": "enum",
 				"datasource": "namespaces",
 				"enum": "namespaces:devices_switchMultilevel:deviceId",
-				"dependencies": "useAirConditionerAndCurtain",
+				"dependencies": "useCurtain",
 				"required": true
 			},
-			"curtainLevelCondition": {
+			"curtainLevel": {
 				"type": "number",
-				"dependencies": "useAirConditionerAndCurtain"
+				"dependencies": "useCurtain"
+			},
+			"curtainDegreeCondition": {
+				"type": "number",
+				"dependencies": "useCurtain"
 			},
 			"debug": {
 				"type": "checkbox"
@@ -158,6 +163,11 @@
 				"field": "optionLabels",
 				"optionLabels": "namespaces:devices_sensorMultilevel:deviceName"
 			},
+			"delta": {
+				"label": "__l_delta__",
+				"type": "number",
+				"helper": "__h_delta__"
+			},
 			"weatherSensor": {
 				"label": "__l_w_sensor__",
 				"type": "select",
@@ -165,10 +175,19 @@
 				"field": "optionLabels",
 				"optionLabels": "namespaces:devices_sensorMultiline:deviceName"
 			},
-			"delta": {
-				"label": "__l_delta__",
-				"type": "number",
-				"helper": "__h_delta__"
+			"daylightSensor": {
+				"label": "__l_d_sensor__",
+				"type": "select",
+				"datasource": "namespaces",
+				"field": "optionLabels",
+				"optionLabels": "namespaces:devices_sensorBinary:deviceName"
+			},
+			"presenceSwitch": {
+				"label": "__l_p_switch__",
+				"type": "select",
+				"datasource": "namespaces",
+				"field": "optionLabels",
+				"optionLabels": "namespaces:devices_switchBinary:deviceName"
 			},
 			"useTime": {
 				"type": "checkbox",
@@ -206,35 +225,15 @@
 					"useTime": true
 				}
 			},
-			"useAirConditionerAndCurtain": {
+			"useAirConditioner": {
 				"type": "checkbox",
-				"rightLabel": "__rl_ac_curtain__"
-			},
-			"presenceSwitch": {
-				"label": "__l_p_switch__",
-				"type": "select",
-				"dependencies": {
-					"useAirConditionerAndCurtain": true
-				},
-				"datasource": "namespaces",
-				"field": "optionLabels",
-				"optionLabels": "namespaces:devices_switchBinary:deviceName"
-			},
-			"daylightSensor": {
-				"label": "__l_d_sensor__",
-				"type": "select",
-				"dependencies": {
-					"useAirConditionerAndCurtain": true
-				},
-				"datasource": "namespaces",
-				"field": "optionLabels",
-				"optionLabels": "namespaces:devices_sensorBinary:deviceName"
+				"rightLabel": "__rl_ac__"
 			},
 			"airConditionerSwitch": {
 				"label": "__l_ac__",
 				"type": "select",
 				"dependencies": {
-					"useAirConditionerAndCurtain": true
+					"useAirConditioner": true
 				},
 				"datasource": "namespaces",
 				"field": "optionLabels",
@@ -244,7 +243,7 @@
 				"label": "__l_ac_thermostat__",
 				"type": "select",
 				"dependencies": {
-					"useAirConditionerAndCurtain": true
+					"useAirConditioner": true
 				},
 				"datasource": "namespaces",
 				"field": "optionLabels",
@@ -253,36 +252,46 @@
 			"airConditionerDegreeValue": {
 				"label": "__l_ac_degree_val__",
 				"dependencies": {
-					"useAirConditionerAndCurtain": true
+					"useAirConditioner": true
 				}
 			},
 			"airConditionerDegreeCondition": {
 				"label": "__l_ac_degree_con__",
 				"dependencies": {
-					"useAirConditionerAndCurtain": true
+					"useAirConditioner": true
 				}
 			},
 			"airConditionerTimeCondition": {
 				"label": "__l_ac_time__",
 				"dependencies": {
-					"useAirConditionerAndCurtain": true
+					"useAirConditioner": true
 				}
 			},
-			"curtainLevelCondition": {
-				"label": "__l_cur_level__",
-				"dependencies": {
-					"useAirConditionerAndCurtain": true
-				}
+			"useCurtain": {
+				"type": "checkbox",
+				"rightLabel": "__rl_curtain__"
 			},
 			"curtain": {
 				"label": "__l_curtain__",
 				"type": "select",
 				"dependencies": {
-					"useAirConditionerAndCurtain": true
+					"useCurtain": true
 				},
 				"datasource": "namespaces",
 				"field": "optionLabels",
 				"optionLabels": "namespaces:devices_switchMultilevel:deviceName"
+			},
+			"curtainLevel": {
+				"label": "__l_cur_level__",
+				"dependencies": {
+					"useCurtain": true
+				}
+			},
+			"curtainDegreeCondition": {
+				"label": "__l_cur_degree_con__",
+				"dependencies": {
+					"useCurtain": true
+				}
 			},
 			"debug": {
 				"type": "checkbox",
