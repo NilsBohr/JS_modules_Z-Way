@@ -183,6 +183,7 @@ CombinedRoomThermostat.prototype.init = function (config) {
 							}
 						}
 					} else {
+						airConditionerSwitch.performCommand("on");
 						self.debug_log("Temperature is normal (current value is:"+ temperatureSensorValue + "). Nothing to do");
 					}
 				}
