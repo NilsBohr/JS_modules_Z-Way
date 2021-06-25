@@ -101,14 +101,6 @@
 				"dependencies": "useAirConditioner",
 				"required": true
 			},
-			"airConditionerDegreeValue": {
-				"type": "number",
-				"dependencies": "useAirConditioner"
-			},
-			"airConditionerDegreeCondition": {
-				"type": "number",
-				"dependencies": "useAirConditioner"
-			},
 			"airConditionerTimeCondition": {
 				"type": "number",
 				"dependencies": "useAirConditioner"
@@ -248,18 +240,6 @@
 				"datasource": "namespaces",
 				"field": "optionLabels",
 				"optionLabels": "namespaces:devices_thermostat:deviceName"
-			},
-			"airConditionerDegreeValue": {
-				"label": "__l_ac_degree_val__",
-				"dependencies": {
-					"useAirConditioner": true
-				}
-			},
-			"airConditionerDegreeCondition": {
-				"label": "__l_ac_degree_con__",
-				"dependencies": {
-					"useAirConditioner": true
-				}
 			},
 			"airConditionerTimeCondition": {
 				"label": "__l_ac_time__",
