@@ -119,9 +119,6 @@ HomePresence.prototype.init = function (config){
 
             if (motionSensor.get('metrics:level') === 'on') {
                 self.isMotionPresent = true;
-                self.debug_log(motionSensor.deviceId + ' is ON');
-            } else {
-                self.debug_log(motionSensor.deviceId + ' is OFF');
             }
         });
 
@@ -195,7 +192,15 @@ HomePresence.prototype.stop = function (){
 
 HomePresence.prototype.printMotionStatus = function (msg){
     if(this.config.debug_logging){
-        console.log('[HomePresence] ' + msg);
+        self.config.motion_sensors.forEach(function(dev) {
+            var motionSensor = self.controller.devices.get(dev.motion_sensor);
+
+            if (motionSensor.get('metrics:level') === 'on') {
+                console.log(motionSensor.deviceId + ' is ON');
+            } else {
+                console.log(motionSensor.deviceId + ' is OFF');
+            }
+        });
     }
 };
 
