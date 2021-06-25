@@ -76,8 +76,8 @@ HomePresence.prototype.init = function (config){
                 }
 
                 if (self.vDevPresence.get('metrics:level') === 'off') {
-                    self.vDevPresence.set('metrics:level', 'on');
-                    self.debug_log('Presence switch changed state to ON');
+                    self.vDevPresence.performCommand("on");
+                    self.info_log('Presence switch changed state to ON');
                 } else {
                     self.debug_log('Presence switch is already ON');
                 }
@@ -95,7 +95,7 @@ HomePresence.prototype.init = function (config){
                 'module',
                 'HomePresence'
             );
-            self.debug_log('Polling failed, check .syscommands file');
+            self.info_log('Polling failed, check .syscommands file');
             return;
         }
     };
@@ -127,31 +127,28 @@ HomePresence.prototype.init = function (config){
 
         if (self.isMotionPresent) {
             if (self.motionTimeout) {
+                self.printMotionStatus();
                 clearTimeout(self.motionTimeout);
                 self.isTimerStarted = false;
             }
 
             if (self.vDevPresence.get('metrics:level') === 'off') {
-                self.vDevPresence.set('metrics:level', 'on');
-                self.debug_log('Presence switch changed state to ON');
-            } else {
-                self.debug_log('Presence switch is already ON');
+                self.printMotionStatus();
+                self.vDevPresence.performCommand("on");
+                self.info_log('Presence switch changed state to ON');
             }
         }
         
         if (!self.isTimerStarted) {
             if (!self.isMotionPresent && !self.isAddrAlive) {
                 if (self.vDevPresence.get('metrics:level') !== 'off') {
+                    self.printMotionStatus();
                     self.debug_log("Timer is started for " + self.config.motion_timeout + " hour(s)");
                     self.isTimerStarted = true;
                     self.motionTimeout = setTimeout(function () {
                         if (!self.isMotionPresent && !self.isAddrAlive) {
-                            if (self.vDevPresence.get('metrics:level') === 'on') {
-                                self.vDevPresence.set('metrics:level', 'off');
-                                self.debug_log('Timer is ended. Presence switch changed state to OFF');
-                            } else {
-                                self.debug_log('Timer is ended, but presence switch is already OFF');
-                            }
+                            self.vDevPresence.performCommand("off");
+                            self.info_log(self.config.motion_timeout + ' hour(s) timer is ended. Presence switch changed state to OFF');
                         }
                         self.isTimerStarted = false;
                         }, self.config.motion_timeout * 60 * 60 * 1000);
@@ -160,8 +157,6 @@ HomePresence.prototype.init = function (config){
                     self.debug_log('Presence switch is already OFF. No need to start timer.');
                 }
             } 
-        } else {
-            self.debug_log('Timer is already in progress.');
         }
     }
 
@@ -198,8 +193,18 @@ HomePresence.prototype.stop = function (){
 // --- Logging for debugging purposes
 // ----------------------------------------------------------------------------
 
+HomePresence.prototype.printMotionStatus = function (msg){
+    if(this.config.debug_logging){
+        console.log('[HomePresence] ' + msg);
+    }
+};
+
 HomePresence.prototype.debug_log = function (msg){
     if(this.config.debug_logging){
         console.log('[HomePresence] ' + msg);
     }
+};
+
+HomePresence.prototype.info_log = function (msg){
+    console.log('[HomePresence] ' + msg);
 };
