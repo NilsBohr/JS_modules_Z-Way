@@ -46,13 +46,13 @@ HomePresence.prototype.init = function (config){
         overlay: {},
         handler: function (command){
             if (command != 'update') {
-				this.set("metrics:level", command);
-				saveObject(this.id + "_level" , command);
-			}
+                this.set("metrics:level", command);
+                saveObject(this.id + "_level" , command);
+            }
         },
         moduleId: self.id
     });
-
+    
     this.poll_addr = function () {
         try {
             self.isAddrAlive = false;
@@ -111,8 +111,6 @@ HomePresence.prototype.init = function (config){
     this.controller.emit('cron.addTask', this.crontask_name, crontime);
     this.controller.on(this.crontask_name, this.poll_addr);
 
-    this.poll_addr();
-
     this.checkMotion = function () {
         self.isMotionPresent = false;
         self.config.motion_sensors.forEach(function(dev) {
@@ -161,6 +159,8 @@ HomePresence.prototype.init = function (config){
     this.config.motion_sensors.forEach(function(dev) {
         self.controller.devices.on(dev.motion_sensor, 'change:metrics:level', self.checkMotion);
     });
+
+    this.poll_addr();
 };
 
 
