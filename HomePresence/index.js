@@ -88,6 +88,7 @@ HomePresence.prototype.init = function (config){
             }
         }
         catch(err){
+            console.log('[HomePresence]: ' + err)
             var msg = 'Home Presence: No permissions to run netcat. Add command "netcat" (without quotes) to .syscommands file.';
             self.controller.addNotification(
                 'error',
@@ -190,7 +191,9 @@ HomePresence.prototype.stop = function (){
 // --- Logging for debugging purposes
 // ----------------------------------------------------------------------------
 
-HomePresence.prototype.printMotionStatus = function (msg){
+HomePresence.prototype.printMotionStatus = function (){
+    var self = this;
+
     if(this.config.debug_logging){
         self.config.motion_sensors.forEach(function(dev) {
             var motionSensor = self.controller.devices.get(dev.motion_sensor);
