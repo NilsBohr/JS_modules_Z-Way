@@ -27,7 +27,7 @@ CombinedRoomThermostat.prototype.init = function (config) {
 			probeType: "thermostat_set_point",
 			metrics: {
 				scaleTitle: '°C',
-				level: 18,
+				level: 22,
 				min: 10,
 				max: 30,
 				icon: "thermostat",
@@ -38,6 +38,10 @@ CombinedRoomThermostat.prototype.init = function (config) {
 		handler: function (command, args) {
 			self.vDev.set("metrics:level", parseInt(args.level, 10));
 			self.checkThermostatsTemp();
+            if (self.airConTimeoutStarted) {
+                clearTimeout(self.airConTimeout);
+                self.airConTimeoutStarted = false;
+            }
 			self.performAirConditioner();
 		},
 		moduleId: this.id
@@ -149,7 +153,7 @@ CombinedRoomThermostat.prototype.init = function (config) {
 			temperatureSensorValue = temperatureSensor.get("metrics:level"),
 			weatherSensorValue = weatherSensor.get("metrics:level"),
 			presenceSwitchValue = presenceSwitch.get("metrics:level"),
-			mainThermostatValue = mainThermostat.get("metrics:level"),
+			mainThermostatValue = mainThermostat.get("metrics:level");
 	
 			if (weatherSensorValue > 5) {
 				if (daylightSensorValue === "on") {
@@ -157,18 +161,20 @@ CombinedRoomThermostat.prototype.init = function (config) {
 						if (presenceSwitchValue === "on") {
 							self.debug_log("Temperature is too high (current value is:"+ temperatureSensorValue + "). Performing air conditioner...")
 							if (!self.airConTimeoutStarted) {	
-								airConditionerSwitch.performCommand("on");
-								self.info_log("Air conditioner is enabled for " + self.config.airConditionerTimeCondition + "hour(s)");
 	
-								setTimeout(function() {
-									airConditionerThermostat.performCommand("exact", {level : mainThermostatValue});
-									self.debug_log("Air conditioners thermostat value is set to " + mainThermostatValue);
-								}, 3 * 1000)
+								var new_value = Math.floor(mainThermostatValue);
+								if (new_value < 18) {
+									new_value = 18;
+								} else if (new_value > 27) {
+									new_value = 27;
+								}
+								self.info_log("Air conditioner is set to " + new_value + " for " + self.config.airConditionerTimeCondition + "hour(s)");
+								airConditionerThermostat.performCommand("exact", {level : new_value});
 									
 			                    self.airConTimeoutStarted = true;
 								self.airConTimeout = setTimeout(function () {
 				                    self.airConTimeoutStarted = false;
-									airConditionerSwitch.performCommand("off");
+									airConditionerSwitch.performCommand("on");
 									self.info_log("Timer is ended. Air conditioner is disabled");
 								}, self.config.airConditionerTimeCondition * 60 * 60 * 1000);
 		
