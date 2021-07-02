@@ -38,11 +38,8 @@ CombinedRoomThermostat.prototype.init = function (config) {
 		handler: function (command, args) {
 			self.vDev.set("metrics:level", parseInt(args.level, 10));
 			self.checkThermostatsTemp();
-            if (self.airConTimeoutStarted) {
-                clearTimeout(self.airConTimeout);
-                self.airConTimeoutStarted = false;
-            }
-			self.performAirConditioner(true);
+            self.manualACcommand = true;
+			self.performAirConditioner();
 		},
 		moduleId: this.id
 	});
@@ -139,7 +136,7 @@ CombinedRoomThermostat.prototype.init = function (config) {
 
 	//handling air conditioner if exist
 	if (this.config.useAirConditioner) {
-		this.performAirConditioner = function (manual) {
+		this.performAirConditioner = function () {
 
 			var daylightSensor = self.controller.devices.get(self.config.daylightSensor),
 			temperatureSensor = self.controller.devices.get(self.config.temperatureSensor),
@@ -159,7 +156,8 @@ CombinedRoomThermostat.prototype.init = function (config) {
 				if (daylightSensorValue === "off") {
 					if (temperatureSensorValue > (mainThermostatValue + self.config.delta)) {
 						if (presenceSwitchValue === "on") {
-							if (!self.airConTimeoutStarted) {	
+							if ((!self.airConTimeoutStarted) || (self.manualACcommand)) {
+								self.manualACcommand = false;
 	
 								var new_value = Math.floor(mainThermostatValue);
 								if (new_value < 18) {
@@ -188,7 +186,8 @@ CombinedRoomThermostat.prototype.init = function (config) {
 							self.debug_log("Thermostat = " + mainThermostatValue + ". Temperature = " + temperatureSensorValue + ". AC is turned OFF");
 			            }
 
-			            if (manual) {
+			            if (self.manualACcommand) {
+			            	self.manualACcommand = false;
 							airConditionerSwitch.performCommand("on");
 							self.debug_log("AC is manually turned OFF");
 			            }
