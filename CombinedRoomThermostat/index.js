@@ -42,7 +42,7 @@ CombinedRoomThermostat.prototype.init = function (config) {
                 clearTimeout(self.airConTimeout);
                 self.airConTimeoutStarted = false;
             }
-			self.performAirConditioner();
+			self.performAirConditioner(true);
 		},
 		moduleId: this.id
 	});
@@ -139,7 +139,7 @@ CombinedRoomThermostat.prototype.init = function (config) {
 
 	//handling air conditioner if exist
 	if (this.config.useAirConditioner) {
-		this.performAirConditioner = function () {
+		this.performAirConditioner = function (manual) {
 
 			var daylightSensor = self.controller.devices.get(self.config.daylightSensor),
 			temperatureSensor = self.controller.devices.get(self.config.temperatureSensor),
@@ -156,7 +156,7 @@ CombinedRoomThermostat.prototype.init = function (config) {
 			mainThermostatValue = mainThermostat.get("metrics:level");
 	
 			if (weatherSensorValue > 5) {
-				if (daylightSensorValue === "on") {
+				if (daylightSensorValue === "off") {
 					if (temperatureSensorValue > (mainThermostatValue + self.config.delta)) {
 						if (presenceSwitchValue === "on") {
 							if (!self.airConTimeoutStarted) {	
@@ -174,7 +174,7 @@ CombinedRoomThermostat.prototype.init = function (config) {
 								self.airConTimeout = setTimeout(function () {
 				                    self.airConTimeoutStarted = false;
 									airConditionerSwitch.performCommand("on");
-									self.info_log("Timer is ended. Air conditioner is disabled");
+									self.info_log("Timer ended. AC is turned OFF");
 								}, self.config.airConditionerTimeCondition * 60 * 60 * 1000);
 		
 							}
@@ -185,7 +185,12 @@ CombinedRoomThermostat.prototype.init = function (config) {
 			                self.airConTimeoutStarted = false;
 
 							airConditionerSwitch.performCommand("on");
-							self.debug_log("Temperature is normal (current value is:"+ temperatureSensorValue + "). AC is turned OFF");
+							self.debug_log("Thermostat = " + mainThermostatValue + ". Temperature = " + temperatureSensorValue + ". AC is turned OFF");
+			            }
+
+			            if (manual) {
+							airConditionerSwitch.performCommand("on");
+							self.debug_log("AC is manually turned OFF");
 			            }
 					}
 				}
@@ -214,7 +219,7 @@ CombinedRoomThermostat.prototype.init = function (config) {
 	
 	
 			if (weatherSensorValue > 5) {
-				if (daylightSensorValue === "on") {
+				if (daylightSensorValue === "off") {
 					if (temperatureSensorValue > self.config.curtainDegreeCondition) {
 						if (presenceSwitchValue === "off") {
 							self.debug_log("Nobody is at home, but temperature is too high (current value is:"+ temperatureSensorValue + "). Performing curtain...");
