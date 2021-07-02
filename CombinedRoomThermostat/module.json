@@ -50,7 +50,7 @@
 			"daylightSensor": {
 				"field": "enum",
 				"datasource": "namespaces",
-				"enum": "namespaces:devices_sensorBinary:deviceId",
+				"enum": "namespaces:devices_switchBinary:deviceId",
 				"required": true
 			},
 			"presenceSwitch": {
@@ -172,7 +172,7 @@
 				"type": "select",
 				"datasource": "namespaces",
 				"field": "optionLabels",
-				"optionLabels": "namespaces:devices_sensorBinary:deviceName"
+				"optionLabels": "namespaces:devices_switchBinary:deviceName"
 			},
 			"presenceSwitch": {
 				"label": "__l_p_switch__",

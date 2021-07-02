@@ -157,9 +157,8 @@ CombinedRoomThermostat.prototype.init = function (config) {
 	
 			if (weatherSensorValue > 5) {
 				if (daylightSensorValue === "on") {
-					if (temperatureSensorValue > mainThermostatValue) {
+					if (temperatureSensorValue > (mainThermostatValue + 0.5)) {
 						if (presenceSwitchValue === "on") {
-							self.debug_log("Temperature is too high (current value is:"+ temperatureSensorValue + "). Performing air conditioner...")
 							if (!self.airConTimeoutStarted) {	
 	
 								var new_value = Math.floor(mainThermostatValue);
@@ -168,7 +167,7 @@ CombinedRoomThermostat.prototype.init = function (config) {
 								} else if (new_value > 27) {
 									new_value = 27;
 								}
-								self.info_log("Air conditioner is set to " + new_value + " for " + self.config.airConditionerTimeCondition + "hour(s)");
+								self.info_log("Thermostat = " + mainThermostatValue + ". Temperature = " + temperatureSensorValue + ". AC set to " + new_value + " for " + self.config.airConditionerTimeCondition + "hour(s)");
 								airConditionerThermostat.performCommand("exact", {level : new_value});
 									
 			                    self.airConTimeoutStarted = true;
@@ -178,19 +177,23 @@ CombinedRoomThermostat.prototype.init = function (config) {
 									self.info_log("Timer is ended. Air conditioner is disabled");
 								}, self.config.airConditionerTimeCondition * 60 * 60 * 1000);
 		
-							} else {
-								self.debug_log("Air conditioner timeout in progress");
 							}
 						}
 					} else {
-						airConditionerSwitch.performCommand("on");
-						self.debug_log("Temperature is normal (current value is:"+ temperatureSensorValue + "). Nothing to do");
+			            if (self.airConTimeoutStarted) {
+			                clearTimeout(self.airConTimeout);
+			                self.airConTimeoutStarted = false;
+
+							airConditionerSwitch.performCommand("on");
+							self.debug_log("Temperature is normal (current value is:"+ temperatureSensorValue + "). AC is turned OFF");
+			            }
 					}
 				}
 			}
 		};
 	
 		this.controller.devices.on(this.config.daylightSensor, 'change:metrics:level', this.performAirConditioner);
+		this.controller.devices.on(this.config.presenceSwitch, 'change:metrics:level', this.performAirConditioner);
 		this.controller.devices.on(this.config.temperatureSensor, 'change:metrics:level', this.performAirConditioner);
 	}
 	
