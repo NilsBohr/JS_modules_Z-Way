@@ -157,7 +157,7 @@ CombinedRoomThermostat.prototype.init = function (config) {
 	
 			if (weatherSensorValue > 5) {
 				if (daylightSensorValue === "on") {
-					if (temperatureSensorValue > (mainThermostatValue + 0.5)) {
+					if (temperatureSensorValue > (mainThermostatValue + self.config.delta)) {
 						if (presenceSwitchValue === "on") {
 							if (!self.airConTimeoutStarted) {	
 	

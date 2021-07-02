@@ -90,7 +90,7 @@
 			"airConditionerSwitch": {
 				"field": "enum",
 				"datasource": "namespaces",
-				"enum": "namespaces:devices_toggleButton:deviceId",
+				"enum": "namespaces:devices_switchBinary:deviceId",
 				"dependencies": "useAirConditioner",
 				"required": true
 			},
@@ -229,7 +229,7 @@
 				},
 				"datasource": "namespaces",
 				"field": "optionLabels",
-				"optionLabels": "namespaces:devices_toggleButton:deviceName"
+				"optionLabels": "namespaces:devices_switchBinary:deviceName"
 			},
 			"airConditionerThermostat": {
 				"label": "__l_ac_thermostat__",
